@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { //check if the form is submitted usi
         $_POST['linkedin_profile'],
         $_POST['profile_picture'],
         $_GET['id']]); //execute the query
-    header("Location: crud/members.php"); //redirect to the members page after execution
+    header("Location: members.php"); //redirect to the members page after execution
     exit(); //stop further execution
 }
 

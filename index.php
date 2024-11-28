@@ -8,7 +8,7 @@ include_once "includes/header.php";
     <hr class="my-4"> <!--hr -> places a horizontal line (horizontal rule)-->
                       <!--my4 -> applies a vertical margin (spacing) to an element-->
     <p>Join our community of professional women in TechPower.</p>
-    <a class="btn btn-primary btn-lg" href="crud/add_member.php" role="button">Join Now</a>
+    <a class="btn btn-primary btn-lg" href="add_member.php" role="button">Join Now</a>
 </div>
 
 <?php

@@ -30,9 +30,9 @@ $stmt->execute(); //execute the sql query
                     </p>
 
                     <!--link to edit_member, passing their ID in the URL-->
-                    <a href="curd/edit_member.php?id=<?php echo $row['id']; ?>" class="btn btnprimary">Edit</a>
+                    <a href="edit_member.php?id=<?php echo $row['id']; ?>" class="btn btnprimary">Edit</a>
                     <!--link to delete_member, passing their ID in the URL, with a confirmation dialog ('Are you sure?')-->
-                    <a href="crud/delete_member.php?id=<?php echo $row['id']; ?>" class="btn btndanger" onclick="return confirm('Are you sure?')">Delete</a>
+                    <a href="delete_member.php?id=<?php echo $row['id']; ?>" class="btn btndanger" onclick="return confirm('Are you sure?')">Delete</a>
                 </div>
             </div>
         </div>

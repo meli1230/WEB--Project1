@@ -11,7 +11,10 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
-        <a class="navbar-brand" href="index.php">Women Techpower Platform</a>
+        <button id="dark-mode-toggler" class="btn btn-darkmode">Dark Mode</button>
+        <a class="navbar-brand" href="index.php">
+            <img src="attachments/logo.png" alt="Logo" class="navbar-logo">
+            Women Techpower Platform</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>

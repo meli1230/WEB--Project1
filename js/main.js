@@ -28,3 +28,26 @@ function validateEmail(email) {
 function validateLinkedIn(url) {
     return url.includes('linkedin.com/'); //check if the URL contains "linkedin.com/" as a substring
 }
+
+document.addEventListener('DOMContentLoaded', function () { //wait for the DOM content to be fully loaded
+    //select the button or element ued to toggle dark mode by it ID
+    const darkModeToggle = document.getElementById('dark-mode-toggler');
+    //define a function toc check if the dark-mode class is currently applied to the body
+    const darkModeStatus = () => document.body.classList.contains('dark-mode');
+
+    //check if the dark mode was previously enabled and change the text of the button accordingly
+    if(localStorage.getItem('darkMode') === 'enabled') {
+        document.body.classList.add('dark-mode');
+        darkModeToggle.textContent = "Light Mode";
+    }
+
+    //add a click event listener to the dark mode toggle button
+    darkModeToggle?.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const enabled = darkModeStatus();
+        localStorage.setItem('darkMode', enabled ? 'enabled' : 'disabled');
+        //update the toggle button text based on the current dark mode status
+        darkModeToggle.textContent = enabled ? "Light Mode" : "Dark Mode";
+    });
+
+});

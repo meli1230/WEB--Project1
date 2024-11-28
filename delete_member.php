@@ -8,6 +8,6 @@ if (isset($_GET['id'])) { //check if the "id" parameter is set in the GET reques
     $stmt = $db->prepare($query); //prepare SQL query for execution
     $stmt->execute([$_GET['id']]); //execute the query, binding the "id" parameter from the GET request to the placeholder
 }
-header("Location: crud/members.php"); //redirect to the members page
+header("Location: members.php"); //redirect to the members page
 exit(); //stop further script execution after the redirect
 ?>
