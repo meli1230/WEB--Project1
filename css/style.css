@@ -1,0 +1,142 @@
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1;
+}
+
+.footer {
+    margin-top: auto;
+}
+
+.member-card {
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/*style and color changes:*/
+
+.navbar {
+    background-color: #b9a0e3 !important; /* !important overrides bootstrap styles */
+}
+
+.navbar a.nav-link {
+    color: #000080 !important;
+}
+
+.navbar a.nav-link:hover {
+    color: lightblue !important;
+}
+
+.btn-primary {
+    background-color: #b9a0e3 !important;
+    color: #000080 !important;
+    border-color: #b9a0e3 !important;
+}
+
+.btn-primary:hover {
+    color: lightblue !important;
+    background-color: mediumpurple !important;
+}
+
+.navbar-brand {
+    color: #000080 !important;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.btnprimary {
+    color: mediumpurple;
+}
+
+.btnprimary:hover {
+    color: #000080;
+}
+
+.btndanger {
+    color: hotpink;
+}
+
+.btndanger:hover {
+    color: red;
+}
+
+.navbar-logo {
+    width: 8vh;
+    height: auto;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+.btn-darkmode {
+    color: #000080 !important;
+}
+
+.custom-dropdown {
+    background-color: #b79fed;
+}
+
+.custom-textbox {
+    background-color: #b79fed;
+}
+
+.custom-textbox::placeholder {
+    color: #000080;
+    opacity: 60%;
+}
+
+.text-color-custom {
+    color: #000080;
+}
+/*end of style and color changes:*/
+
+/*dark mode:*/
+body.dark-mode {
+    background-color: black;
+    color: white;
+}
+
+body.dark-mode .card-body {
+    background-color: black;
+    color: white;
+}
+
+body.dark-mode .footer {
+    background-color: #353535 !important;
+    color: white;
+}
+
+body.dark-mode .jumbotron {
+    background-color: #353535;
+    color: white;
+}
+
+body.dark-mode .btnprimary:hover {
+    color: #18d4f4;
+}
+
+body.dark-mode .text-color-custom {
+    color: #b79fed;
+}
+/*end of dark mode*/
+
+/*simple animations for members' cards on hover*/
+.member-card:hover {
+    box-shadow: 0px 0px 15px #000080;
+}
+
+body.dark-mode .member-card:hover {
+    box-shadow: 0px 0px 15px #18d4f4;
+}
+
+/*end of simple animations for members' cards on hover*/
+
