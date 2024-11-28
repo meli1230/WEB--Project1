@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { //check if the form is submitted usi
                      linkedin_profile,
                      profile_picture) 
                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"; //sql query
+                        // ? -> placeholders that are part of a prepared statement in SQL; the values are safely inserted in the database at runtime
     $stmt = $db->prepare($query); //prepare the SQL query for execution
     $stmt->execute([
         $_POST['first_name'],
