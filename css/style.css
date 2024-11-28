@@ -117,7 +117,7 @@ body.dark-mode .footer {
     color: white;
 }
 
-body.dark-mode .jumbotron { /*also related to the footer; used to display a prominent section*/
+body.dark-mode .jumbotron { /*this is the "Welcome to Women Techpower Platform card; matches the style of the footer*/
     background-color: #353535;
     color: white;
 }
