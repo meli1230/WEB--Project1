@@ -6,7 +6,7 @@
     <!--initial-scale=1.0 -> sets the default zoom level to 100% (no zoom) when the page loads-->
     <title>Women Techpower Platform</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> <!--defines the bootstrap style from the source-->
-    <link rel="styesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
