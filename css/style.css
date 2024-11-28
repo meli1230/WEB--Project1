@@ -100,6 +100,7 @@ body {
 
 /*end of style and color changes:*/
 
+
 /*dark mode:*/
 body.dark-mode {
     background-color: black;
@@ -116,7 +117,7 @@ body.dark-mode .footer {
     color: white;
 }
 
-body.dark-mode .jumbotron {
+body.dark-mode .jumbotron { /*also related to the footer; used to display a prominent section*/
     background-color: #353535;
     color: white;
 }
@@ -130,6 +131,8 @@ body.dark-mode .text-color-custom {
 }
 /*end of dark mode*/
 
+
+
 /*simple animations for members' cards on hover*/
 .member-card:hover {
     box-shadow: 0px 0px 15px #000080;
@@ -138,6 +141,5 @@ body.dark-mode .text-color-custom {
 body.dark-mode .member-card:hover {
     box-shadow: 0px 0px 15px #18d4f4;
 }
-
 /*end of simple animations for members' cards on hover*/
 
