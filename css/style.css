@@ -143,3 +143,19 @@ body.dark-mode .member-card:hover {
 }
 /*end of simple animations for members' cards on hover*/
 
+
+
+/*details_member styling*/
+.details-table th {
+    text-align: left;
+    padding: 10px;
+    width: 30%;
+    vertical-align: top;
+}
+
+.details-table td {
+    text-align: left;
+    padding: 10px 20px;
+    font-weight: normal;
+}
+/*end of details_member styling*/

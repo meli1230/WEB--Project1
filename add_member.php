@@ -28,8 +28,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { //check if the form is submitted usi
                      profession, 
                      company, 
                      expertise, 
-                     linkedin_profile) 
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"; //sql query
+                     linkedin_profile,
+                     studies) 
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; //sql query
                         // ? -> placeholders that are part of a prepared statement in SQL; the values are safely inserted in the database at runtime
     $stmt = $db->prepare($query); //prepare the SQL query for execution
     $stmt->execute([
@@ -41,7 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { //check if the form is submitted usi
         $_POST['profession'],
         $_POST['company'],
         $_POST['expertise'],
-        $_POST['linkedin_profile']]); //execute the query
+        $_POST['linkedin_profile'],
+        $_POST['studies']]); //execute the query
     header("Location: login.php"); //redirect to the members page after execution
     exit(); //stop further execution
 }
@@ -92,6 +94,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { //check if the form is submitted usi
         <div class="form-group">
             <label>LinkedIn Profile</label>
             <input type="url" name="linkedin_profile" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>Studies</label>
+            <input type="text" name="studies" class="form-control">
         </div>
         <button type="submit" class="btn btn-primary">Add Member</button>
     </form>

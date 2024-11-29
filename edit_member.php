@@ -15,7 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { //check if the form is submitted usi
                     profession=?,
                     company=?, 
                     expertise=?, 
-                    linkedin_profile=?
+                    linkedin_profile=?,
+                    studies=?
                 WHERE id=?"; //sql query
                         //? -> using the placeholders ensures the query is protected against SQL injection, as values are bound securely; allows to update multiple columns
                                     // dynamically based on user input
@@ -30,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { //check if the form is submitted usi
         $_POST['company'],
         $_POST['expertise'],
         $_POST['linkedin_profile'],
+        $_POST['studies'],
         $_GET['id']]); //execute the query
     header("Location: members.php"); //redirect to the members page after execution
     exit(); //stop further execution
@@ -83,6 +85,10 @@ $member = $stmt->fetch(PDO::FETCH_ASSOC);
         <div class="form-group">
             <label>LinkedIn Profile</label>
             <input type="url" name="linkedin_profile" class="form-control" value="<?php echo htmlspecialchars($member['linkedin_profile']); ?>">
+        </div>
+        <div class="form-group">
+            <label>Studies</label>
+            <input type="text" name="studies" class="form-control" value="<?php echo htmlspecialchars($member['studies']); ?>">
         </div>
         <br/>
         <button type="submit" class="btn btn-primary">Update Member</button>
