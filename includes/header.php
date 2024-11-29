@@ -27,16 +27,18 @@ session_start();
             <ul class="navbar-nav">
                 <li class="nav-item"><a class="nav-link" href="members.php">Members</a></li>
                 <li class="nav-item"><a class="nav-link" href="mentors.php">Mentors</a></li>
+
+            </ul>
+            <ul class="navbar-nav ml-auto"> <!-- Right-aligned menu -->
                 <?php if (!isset($_SESSION['user_id'])): ?>
                     <li class="nav-item"><a class="nav-link" href="add_member.php">Register</a></li>
                 <?php endif; ?>
                 <?php if (isset($_SESSION['user_id'])): ?>
+                    <li class="nav-item"><a class="nav-link" href="account_details.php">Account</a></li>
                     <li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>
                 <?php else: ?>
                     <li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>
                 <?php endif; ?>
-            </ul>
-            <ul class="navbar-nav ml-auto"> <!-- Right-aligned menu -->
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <li class="nav-item">
                         <span class="navbar-text text-light">
