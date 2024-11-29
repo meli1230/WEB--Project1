@@ -28,9 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { //check if the form is submitted usi
                      profession, 
                      company, 
                      expertise, 
-                     linkedin_profile,
-                     profile_picture) 
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; //sql query
+                     linkedin_profile) 
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"; //sql query
                         // ? -> placeholders that are part of a prepared statement in SQL; the values are safely inserted in the database at runtime
     $stmt = $db->prepare($query); //prepare the SQL query for execution
     $stmt->execute([
@@ -42,8 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { //check if the form is submitted usi
         $_POST['profession'],
         $_POST['company'],
         $_POST['expertise'],
-        $_POST['linkedin_profile'],
-        $_POST['profile_picture']]); //execute the query
+        $_POST['linkedin_profile']]); //execute the query
     header("Location: login.php"); //redirect to the members page after execution
     exit(); //stop further execution
 }
@@ -73,6 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { //check if the form is submitted usi
         </div>
         <div class="form-group">
             <label>Account type</label>
+            <br/>
             <select name="status" class="custom-dropdown" required>
                 <option value="member" selected>Member</option>
                 <option value="mentor">Mentor</option>
@@ -93,10 +92,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { //check if the form is submitted usi
         <div class="form-group">
             <label>LinkedIn Profile</label>
             <input type="url" name="linkedin_profile" class="form-control">
-        </div>
-        <div class="form-group">
-            <label>Profile Picture</label>
-            <input type="file" name="profile_picture" class="form-control" accept="image/*"
         </div>
         <button type="submit" class="btn btn-primary">Add Member</button>
     </form>
