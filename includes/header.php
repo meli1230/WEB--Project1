@@ -1,5 +1,5 @@
 <?php
-//session_start();
+session_start();
 //TODO: comments!!!
 ?>
 
@@ -26,7 +26,9 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item"><a class="nav-link" href="members.php">Members</a></li>
-                <li class="nav-item"><a class="nav-link" href="add_member.php">Register</a></li>
+                <?php if (!isset($_SESSION['user_id'])): ?>
+                    <li class="nav-item"><a class="nav-link" href="add_member.php">Register</a></li>
+                <?php endif; ?>
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>
                 <?php else: ?>
