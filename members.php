@@ -2,15 +2,31 @@
 include_once "config/database.php";
 include_once "includes/header.php";
 
+$members_per_page = 6;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1; //current page number
+if ($page < 1) $page = 1; // ensure the page number is valid
+$offset = ($page - 1) * $members_per_page;
+
 $database = new Database(); //create a new instance of the database class to establish a database connection
 $db = $database->getConnection(); //get the database connection object
-$query = "SELECT * FROM members ORDER BY created_at DESC"; //sql query
+
+// Get total number of members for pagination
+$countQuery = "SELECT COUNT(*) as total_members FROM members";
+$countStmt = $db->prepare($countQuery);
+$countStmt->execute();
+$total_members = $countStmt->fetch(PDO::FETCH_ASSOC)['total_members'];
+$total_pages = ceil($total_members / $members_per_page); // calculate total pages
+
+$query = "SELECT * FROM members ORDER BY created_at DESC LIMIT :offset, :members_per_page"; //sql query
 $stmt = $db->prepare($query); //prepare the SQL query for execution
     //1. SQL sent to the database engine
     //2. Parsing and syntax checking
     //3. Query optimization (creates an execution plan for the query
     //4. Precompilation (safely inserts actual values in to the placeholders, avoiding SQL injection risks
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+$stmt->bindValue(':members_per_page', $members_per_page, PDO::PARAM_INT);
 $stmt->execute(); //execute the sql query
+
 ?>
 
 <h2>Members Directory</h2>
@@ -39,4 +55,21 @@ $stmt->execute(); //execute the sql query
     <?php endwhile;
     ?>
 </div>
+
+<!--Pagination-->
+    <div class="pagination">
+        <?php if ($page > 1): ?>
+            <a href="?page=<?php echo $page - 1; ?>" class="btn btn-secondary">Previous</a>
+        <?php endif; ?>
+
+        <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+            <a href="?page=<?php echo $i; ?>" class="btn btn-<?php echo $i == $page ? 'primary' : 'secondary'; ?>">
+                <?php echo $i; ?>
+            </a>
+        <?php endfor; ?>
+
+        <?php if ($page < $total_pages): ?>
+            <a href="?page=<?php echo $page + 1; ?>" class="btn btn-secondary">Next</a>
+        <?php endif; ?>
+    </div>
 <?php include_once "includes/footer.php"; ?>
