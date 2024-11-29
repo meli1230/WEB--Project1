@@ -82,7 +82,7 @@ $professionStmt = $db->prepare($professionQuery);
 $professionStmt->execute();
 ?>
 
-    <h2>Members Directory</h2>
+    <h2>Mentors Directory</h2>
 
     <!-- Sorting options -->
     <div class="sorting-options">

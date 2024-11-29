@@ -58,7 +58,7 @@ if (!$user) {
 ?>
 
 <div class="form-container">
-    <h2>Edit Your Account Details</h2>
+    <h2>Account Details</h2>
     <form method="POST">
         <div class="form-group">
             <label>First Name</label>
