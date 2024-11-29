@@ -11,6 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { //check if the form is submitted usi
                     last_name=?, 
                     email=?, 
                     pswd = ?,
+                    status = ?,
                     profession=?,
                     company=?, 
                     expertise=?, 
@@ -24,6 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { //check if the form is submitted usi
         $_POST['last_name'],
         $_POST['email'],
         $_POST['pswd'],
+        $_POST['status'],
         $_POST['profession'],
         $_POST['company'],
         $_POST['expertise'],
@@ -57,6 +59,14 @@ $member = $stmt->fetch(PDO::FETCH_ASSOC);
         <div class="form-group">
             <label>Password</label>
             <input type="password" name="pswd" class="form-control" value="<?php echo htmlspecialchars($member['pswd']); ?>" required>
+        </div>
+        <div class="form-group">
+            <label>Account type</label>
+            <br/>
+            <select name="status" class="custom-dropdown" required>
+                <option value="member" <?php echo $member['status'] === 'member' ? 'selected' : ''; ?>>Member</option>
+                <option value="mentor" <?php echo $member['status'] === 'mentor' ? 'selected' : ''; ?>>Mentor</option>
+            </select>
         </div>
         <div class="form-group">
             <label>Profession</label>
