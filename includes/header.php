@@ -27,6 +27,7 @@ session_start();
             <ul class="navbar-nav">
                 <li class="nav-item"><a class="nav-link" href="members.php">Members</a></li>
                 <li class="nav-item"><a class="nav-link" href="mentors.php">Mentors</a></li>
+                <li class="nav-item"><a class="nav-link" href="jobs.php">Jobs</a></li>
 
             </ul>
             <ul class="navbar-nav ml-auto"> <!-- Right-aligned menu -->
