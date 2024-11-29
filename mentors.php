@@ -121,7 +121,7 @@ $professionStmt->execute();
     </div>
     <br/>
 
-    <!-- Member cards -->
+    <!-- Mentors cards -->
     <div class="row"> <!--row container for displaying member's cards-->
         <?php while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?> <!--loop through each row fetched from the database-->
             <div class="col-md-4"> <!--create column for each member card-->
