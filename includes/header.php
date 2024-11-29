@@ -1,6 +1,6 @@
 <?php
 session_start();
-//TODO: comments!!!
+
 ?>
 
 <!DOCTYPE html>
