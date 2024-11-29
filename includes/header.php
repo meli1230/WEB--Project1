@@ -1,3 +1,8 @@
+<?php
+session_start();
+//TODO: comments!!!
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,7 +27,20 @@
             <ul class="navbar-nav">
                 <li class="nav-item"><a class="nav-link" href="members.php">Members</a></li>
                 <li class="nav-item"><a class="nav-link" href="add_member.php">Register</a></li>
-                <li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>
+                <?php else: ?>
+                    <li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>
+                <?php endif; ?>
+            </ul>
+            <ul class="navbar-nav ml-auto"> <!-- Right-aligned menu -->
+                <?php if (isset($_SESSION['user_id'])): ?>
+                    <li class="nav-item">
+                        <span class="navbar-text text-light">
+                            Welcome, <?= htmlspecialchars($_SESSION['user_name']); ?>!
+                        </span>
+                    </li>
+                <?php endif; ?>
             </ul>
         </div>
     </div>

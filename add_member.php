@@ -24,12 +24,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { //check if the form is submitted usi
                      last_name, 
                      email, 
                      pswd,
+                     status,
                      profession, 
                      company, 
                      expertise, 
                      linkedin_profile,
                      profile_picture) 
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"; //sql query
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; //sql query
                         // ? -> placeholders that are part of a prepared statement in SQL; the values are safely inserted in the database at runtime
     $stmt = $db->prepare($query); //prepare the SQL query for execution
     $stmt->execute([
@@ -37,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { //check if the form is submitted usi
         $_POST['last_name'],
         $_POST['email'],
         $hashedPassword,
+        $_POST['status'],
         $_POST['profession'],
         $_POST['company'],
         $_POST['expertise'],
@@ -70,6 +72,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { //check if the form is submitted usi
         <div class="form-group">
             <label>Password</label>
             <input type="password" name="pswd" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label>Account type</label>
+            <select name="status" class="custom-dropdown" required>
+                <option value="member" selected>Member</option>
+                <option value="mentor">Mentor</option>
+            </select>
         </div>
         <div class="form-group">
             <label>Profession</label>
