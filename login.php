@@ -27,6 +27,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){ //check if the form is submitted using
     }
 }
 //TODO: add the member, mentor and admin functionalities!!!
+//TODO: write comments for each line
 ?>
 
 <div class="form-container">

@@ -6,6 +6,19 @@ include_once "includes/header.php";
 if ($_SERVER['REQUEST_METHOD'] == 'POST') { //check if the form is submitted using POST method
     $database = new Database(); //create a new instance of the database
     $db = $database->getConnection(); //get the database connection object
+
+    $emailQuery = "SELECT id FROM members WHERE email = ?";
+    $emailStmt = $db->prepare($emailQuery);
+    $emailStmt->execute([$_POST['email']]);
+
+    //Check if email already exists
+    if($emailStmt->rowCount() > 0){
+        $error = "Email already exists. Please use a different email.";
+    } else {
+        $hashedPassword = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    }
+
+    //Insert new user
     $query = "INSERT INTO members (
                      first_name, 
                      last_name, 
@@ -23,21 +36,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { //check if the form is submitted usi
         $_POST['first_name'],
         $_POST['last_name'],
         $_POST['email'],
-        $_POST['pswd'],
+        $hashedPassword,
         $_POST['profession'],
         $_POST['company'],
         $_POST['expertise'],
         $_POST['linkedin_profile'],
         $_POST['profile_picture']]); //execute the query
-    header("Location: members.php"); //redirect to the members page after execution
+    header("Location: login.php"); //redirect to the members page after execution
     exit(); //stop further execution
 }
+
+//TODO: add the member, mentor and admin functionalities!!!
+//TODO: write comments for each line
 ?>
 
 
 <div class="form-container">
-    <h2>Add New Member</h2>
-    <form method="POST">
+    <h2>Register</h2>
+    <?php if (isset($error)) echo "<p style='color:red;'>$error</p>"; ?>
+    <form method="POST" enctype="multipart/form-data"> <!--enctype necessary for file uploads-->
         <div class="form-group">
             <label>First Name</label>
             <input type="text" name="first_name" class="form-control" required>
