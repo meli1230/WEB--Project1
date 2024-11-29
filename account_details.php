@@ -55,6 +55,15 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 if (!$user) {
     die("User not found.");
 }
+
+// Fetch account recommendations (users with the same profession)
+$recommendations = [];
+if (!empty($user['profession'])) {
+    $query = "SELECT first_name, last_name FROM members WHERE profession = ? AND id != ? LIMIT 10";
+    $stmt = $db->prepare($query);
+    $stmt->execute([$user['profession'], $user_id]);
+    $recommendations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 ?>
 
 <div class="form-container">
@@ -107,6 +116,21 @@ if (!$user) {
         <br />
         <button type="submit" class="btn btn-primary">Update Account</button>
     </form>
+</div>
+
+
+<!--Account recommendations-->
+<div class="form-container">
+    <h3>Account Recommendations</h3>
+    <?php if (count($recommendations) > 0): ?>
+        <ul>
+            <?php foreach ($recommendations as $recommendation): ?>
+                <li><?php echo htmlspecialchars($recommendation['first_name'] . ' ' . $recommendation['last_name']); ?></li>
+            <?php endforeach; ?>
+        </ul>
+    <?php else: ?>
+        <p>No recommendations available at the moment.</p>
+    <?php endif; ?>
 </div>
 
 <?php include_once "includes/footer.php"; ?>
