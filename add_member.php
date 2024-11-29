@@ -35,7 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') { //check if the form is submitted usi
 ?>
 
 
-<div class="form-container"><h2>Add New Member</h2>
+<div class="form-container">
+    <h2>Add New Member</h2>
     <form method="POST">
         <div class="form-group">
             <label>First Name</label>
