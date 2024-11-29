@@ -26,7 +26,7 @@ $professionFilter = isset($_GET['profession']) ? $_GET['profession'] : '';
 $searchQuery = isset($_GET['query']) ? trim($_GET['query']) : '';
 
 // Base query
-$query = "SELECT * FROM members WHERE 1=1";
+$query = "SELECT * FROM members WHERE status = 'member'";
 
 // Add profession filter to query
 if ($professionFilter) {
@@ -56,7 +56,7 @@ $stmt->bindValue(":members_per_page", $members_per_page, PDO::PARAM_INT);
 $stmt->execute();
 
 // Get total members count for pagination
-$countQuery = "SELECT COUNT(*) as total_members FROM members WHERE 1=1";
+$countQuery = "SELECT COUNT(*) as total_members FROM members WHERE status = 'member'";
 
 if ($professionFilter) {
     $countQuery .= " AND profession = :profession";
