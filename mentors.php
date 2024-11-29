@@ -135,7 +135,8 @@ $professionStmt->execute();
                             <br>
                             <strong>Company:</strong> <?php echo htmlspecialchars($row['company']); ?>
                         </p>
-
+                        <!--link to member_details, passing their ID in the URL-->
+                        <a href="details_member.php?id=<?php echo $row['id']; ?>" class="btn btnprimary">Details</a>
                         <!--link to edit_member, passing their ID in the URL-->
                         <a href="edit_member.php?id=<?php echo $row['id']; ?>" class="btn btnprimary">Edit</a>
                         <!--link to delete_member, passing their ID in the URL, with a confirmation dialog ('Are you sure?')-->
