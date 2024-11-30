@@ -43,8 +43,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     ]);
 
     // Redirect or display success message
-    echo "<p>Your account details have been updated successfully!</p>";
+    echo "<p style='color:green;'>Your account details have been updated successfully!</p>";
 }
+
 
 // Fetch the user's current details
 $query = "SELECT * FROM members WHERE id = ?";
