@@ -26,7 +26,7 @@ body {
 /*style and color changes:*/
 
 .navbar {
-    background-color: #b9a0e3 !important; /* !important overrides bootstrap styles */
+    background-color: #b9a0e3 !important;
 }
 
 .navbar a.nav-link {
@@ -37,6 +37,20 @@ body {
     color: lightblue !important;
 }
 
+.navbar-brand {
+    color: #000080 !important;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.navbar-logo {
+    width: 8vh;
+    height: auto;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+
 .btn-primary {
     background-color: #b9a0e3 !important;
     color: #000080 !important;
@@ -46,12 +60,6 @@ body {
 .btn-primary:hover {
     color: lightblue !important;
     background-color: mediumpurple !important;
-}
-
-.navbar-brand {
-    color: #000080 !important;
-    font-size: 1.5em;
-    font-weight: bold;
 }
 
 .btnprimary {
@@ -68,13 +76,6 @@ body {
 
 .btndanger:hover {
     color: red;
-}
-
-.navbar-logo {
-    width: 8vh;
-    height: auto;
-    vertical-align: middle;
-    margin-right: 10px;
 }
 
 .btn-darkmode { /*dark mode / light mode button -> the one that activates the styles*/

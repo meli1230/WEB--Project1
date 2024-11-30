@@ -15,23 +15,29 @@ session_start();
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container">
-        <button id="dark-mode-toggler" class="btn btn-darkmode">Dark Mode</button>
-        <a class="navbar-brand" href="index.php">
-            <img src="attachments/logo.png" alt="Logo" class="navbar-logo">
-            Women Techpower Platform</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
+    <div class="container-fluid"> <!-- Changed to container-fluid for full-width layout -->
+        <!-- Left Section -->
+        <div class="navbar-left d-flex align-items-center">
+            <button id="dark-mode-toggler" class="btn btn-darkmode">Dark Mode</button>
+            <a class="navbar-brand d-flex align-items-center" href="index.php">
+                <img src="attachments/logo.png" alt="Logo" class="navbar-logo">
+                Women Techpower Platform
+            </a>
+        </div>
+
+        <!-- Center Section -->
+        <div class="navbar-center d-none d-lg-flex justify-content-center">
             <ul class="navbar-nav">
                 <li class="nav-item"><a class="nav-link" href="members.php">Members</a></li>
                 <li class="nav-item"><a class="nav-link" href="mentors.php">Mentors</a></li>
                 <li class="nav-item"><a class="nav-link" href="jobs.php">Jobs</a></li>
-                <li class="nav-item"><a class="nav-link" href="add_job.php">Add job</a></li>
-
+                <li class="nav-item"><a class="nav-link" href="add_job.php">Add Job</a></li>
             </ul>
-            <ul class="navbar-nav ml-auto"> <!-- Right-aligned menu -->
+        </div>
+
+        <!-- Right Section -->
+        <div class="navbar-right d-flex align-items-center ml-auto">
+            <ul class="navbar-nav">
                 <?php if (!isset($_SESSION['user_id'])): ?>
                     <li class="nav-item"><a class="nav-link" href="add_member.php">Register</a></li>
                 <?php endif; ?>
@@ -41,15 +47,14 @@ session_start();
                 <?php else: ?>
                     <li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>
                 <?php endif; ?>
-                <?php if (isset($_SESSION['user_id'])): ?>
-                    <li class="nav-item">
-                        <span class="navbar-text text-light">
-                            Welcome, <?= htmlspecialchars($_SESSION['user_name']); ?>!
-                        </span>
-                    </li>
-                <?php endif; ?>
             </ul>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <span class="navbar-text text-light ml-3">
+                    Welcome, <?= htmlspecialchars($_SESSION['user_name']); ?>!
+                </span>
+            <?php endif; ?>
         </div>
     </div>
 </nav>
+
 <div class="container mt-4"> <!--mt4 = margin-top of 4 units-->
