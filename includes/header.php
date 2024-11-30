@@ -35,6 +35,8 @@ session_start();
                 <li class="nav-item"><a class="nav-link" href="resource_hub.php">Resource Hub</a></li>
                 <li class="nav-item"><a class="nav-link" href="events.php">Events</a></li>
                 <li class="nav-item"><a class="nav-link" href="add_event.php">Add Event</a></li>
+                <li class="nav-item"><a class="nav-link" href="mentorships.php">Mentorship</a></li>
+                <li class="nav-item"><a class="nav-link" href="add_mentorship.php">Add Mentorship Slot</a></li>
 
             </ul>
         </div>

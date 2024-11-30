@@ -57,6 +57,17 @@ body {
     border-color: #b9a0e3 !important;
 }
 
+.btn-secondary {
+    background-color: #000080 !important;
+    color: #b9a0e3 !important;
+    border-color: #000080 !important;
+}
+
+.btn-secondary:hover {
+    color: lightblue !important;
+    background-color: #19195a !important;
+}
+
 .btn-primary:hover {
     color: lightblue !important;
     background-color: mediumpurple !important;
