@@ -159,3 +159,32 @@ body.dark-mode .member-card:hover {
     font-weight: normal;
 }
 /*end of details_member styling*/
+
+/*filters for jobs*/
+.filter-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; /* Three equal-width columns */
+    gap: 20px; /* Spacing between columns */
+    margin-bottom: 20px;
+}
+
+.filter-column {
+    padding: 10px;
+    background-color: #222; /* Optional: background for filter sections */
+    border-radius: 5px;
+}
+
+.filter-column h5 {
+    margin-bottom: 10px;
+    color: #ffffff;
+}
+
+label {
+    color: #b79fed;
+    display: block;
+    margin-bottom: 5px;
+}
+
+
+
+/*end of filters for jobs*/
