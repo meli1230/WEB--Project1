@@ -17,6 +17,14 @@ body {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+.resource-card {
+    min-height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+}
+
 .form-container {
     max-width: 600px;
     margin: 0 auto;
@@ -176,3 +184,4 @@ body.dark-mode .member-card:hover {
     font-weight: normal;
 }
 /*end of details_member and details_job styling*/
+

@@ -15,7 +15,7 @@ session_start();
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <div class="container-fluid"> <!-- Changed to container-fluid for full-width layout -->
+    <div class="container-fluid">
         <!-- Left Section -->
         <div class="navbar-left d-flex align-items-center">
             <button id="dark-mode-toggler" class="btn btn-darkmode">Dark Mode</button>
@@ -25,9 +25,15 @@ session_start();
             </a>
         </div>
 
-        <!-- Center Section -->
-        <div class="navbar-center d-none d-lg-flex justify-content-center">
-            <ul class="navbar-nav">
+        <!-- Toggler Button -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Collapsible Navbar -->
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <!-- Center Section -->
+            <ul class="navbar-nav mx-auto">
                 <li class="nav-item"><a class="nav-link" href="members.php">Members</a></li>
                 <li class="nav-item"><a class="nav-link" href="mentors.php">Mentors</a></li>
                 <li class="nav-item"><a class="nav-link" href="jobs.php">Jobs</a></li>
@@ -37,30 +43,27 @@ session_start();
                 <li class="nav-item"><a class="nav-link" href="add_event.php">Add Event</a></li>
                 <li class="nav-item"><a class="nav-link" href="mentorships.php">Mentorship</a></li>
                 <li class="nav-item"><a class="nav-link" href="add_mentorship.php">Add Mentorship Slot</a></li>
-
             </ul>
-        </div>
 
-        <!-- Right Section -->
-        <div class="navbar-right d-flex align-items-center ml-auto">
-            <ul class="navbar-nav">
+            <!-- Right Section -->
+            <ul class="navbar-nav ml-auto">
                 <?php if (!isset($_SESSION['user_id'])): ?>
                     <li class="nav-item"><a class="nav-link" href="add_member.php">Register</a></li>
                 <?php endif; ?>
                 <?php if (isset($_SESSION['user_id'])): ?>
                     <li class="nav-item"><a class="nav-link" href="account_details.php">Account</a></li>
                     <li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>
+                    <!-- Welcome Text Now Inside the Right Section -->
+                    <span class="navbar-text text-light ml-3">
+                        Welcome, <?= htmlspecialchars($_SESSION['user_name']); ?>!
+                    </span>
                 <?php else: ?>
                     <li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>
                 <?php endif; ?>
             </ul>
-            <?php if (isset($_SESSION['user_id'])): ?>
-                <span class="navbar-text text-light ml-3">
-                    Welcome, <?= htmlspecialchars($_SESSION['user_name']); ?>!
-                </span>
-            <?php endif; ?>
         </div>
     </div>
 </nav>
+
 
 <div class="container mt-4"> <!--mt4 = margin-top of 4 units-->

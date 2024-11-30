@@ -117,11 +117,12 @@ $total_pages = ceil($total_resources / $resources_per_page);
 </div>
 <br/>
 
+<!--Cards-->
 <div class="row">
     <?php if ($stmt): ?>
         <?php while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
             <div class="col-md-4">
-                <div class="card member-card">
+                <div class="card member-card resource-card">
                     <div class="card-body">
                         <h5 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h5>
                         <?php if (isset($row['resource_type']) && $row['resource_type'] === 'downloads'): ?>
