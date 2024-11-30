@@ -1,10 +1,14 @@
 <?php
-
 include_once "config/database.php";
 include_once "includes/header.php";
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start(); // Ensure session is started
+}
+
+// Helper function to display "N/A" for missing values
+function displayValue($value) {
+    return !empty($value) ? htmlspecialchars($value) : "N/A";
 }
 
 // Ensure the user is logged in
@@ -65,16 +69,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
     if ($remainingSlots <= 0) {
         echo "<p style='color:red;'>No more slots available for this event.</p>";
     } else {
-        // Register for the event
         $registerQuery = "INSERT INTO event_registrations (event_id, member_id, status) VALUES (?, ?, 'confirmed')";
         $registerStmt = $db->prepare($registerQuery);
-
         try {
             $registerStmt->execute([$eventId, $userId]);
             echo "<p style='color:green;'>You have successfully registered for this event.</p>";
             $remainingSlots--; // Decrease the remaining slots
             $isRegistered = true;
-            // Refresh the list of participants
             $participantsStmt->execute([$eventId]);
             $participants = $participantsStmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
@@ -87,13 +88,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel'])) {
     $cancelQuery = "DELETE FROM event_registrations WHERE event_id = ? AND member_id = ?";
     $cancelStmt = $db->prepare($cancelQuery);
-
     try {
         $cancelStmt->execute([$eventId, $userId]);
         echo "<p style='color:orange;'>You have successfully canceled your registration for this event.</p>";
         $remainingSlots++; // Increase the remaining slots
         $isRegistered = false;
-        // Refresh the list of participants
         $participantsStmt->execute([$eventId]);
         $participants = $participantsStmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
@@ -101,47 +100,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel'])) {
     }
 }
 
-// Helper function to display "N/A" for missing values
-function displayValue($value) {
-    return !empty($value) ? htmlspecialchars($value) : "N/A";
+// Handle feedback submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['feedback_submit'])) {
+    $feedback = trim($_POST['feedback']);
+    $rating = intval($_POST['rating']);
+    if (!empty($feedback) && $rating > 0 && $rating <= 5) {
+        $feedbackQuery = "INSERT INTO event_feedback (event_id, member_id, feedback, rating) VALUES (?, ?, ?, ?)";
+        $feedbackStmt = $db->prepare($feedbackQuery);
+        try {
+            $feedbackStmt->execute([$eventId, $userId, $feedback, $rating]);
+            echo "<p style='color:green;'>Thank you for your feedback!</p>";
+        } catch (PDOException $e) {
+            echo "<p style='color:red;'>Error submitting feedback: " . htmlspecialchars($e->getMessage()) . "</p>";
+        }
+    } else {
+        echo "<p style='color:red;'>Please provide valid feedback and a rating between 1 and 5.</p>";
+    }
 }
 
+// Fetch feedback and average rating
+$feedbackQuery = "SELECT feedback, rating, CONCAT(members.first_name, ' ', members.last_name) AS full_name 
+                  FROM event_feedback 
+                  INNER JOIN members ON event_feedback.member_id = members.id 
+                  WHERE event_feedback.event_id = ?";
+$feedbackStmt = $db->prepare($feedbackQuery);
+$feedbackStmt->execute([$eventId]);
+$feedbackList = $feedbackStmt->fetchAll(PDO::FETCH_ASSOC);
+
+$averageRatingQuery = "SELECT AVG(rating) AS average_rating FROM event_feedback WHERE event_id = ?";
+$averageRatingStmt = $db->prepare($averageRatingQuery);
+$averageRatingStmt->execute([$eventId]);
+$averageRating = $averageRatingStmt->fetch(PDO::FETCH_ASSOC)['average_rating'];
 ?>
 
 <div class="details-container">
     <h2>Event Details</h2>
     <table class="details-table">
-        <tr>
-            <th>Title:</th>
-            <td><?php echo displayValue($event['title']); ?></td>
-        </tr>
-        <tr>
-            <th>Description:</th>
-            <td><?php echo nl2br(displayValue($event['description'])); ?></td>
-        </tr>
-        <tr>
-            <th>Event Date:</th>
-            <td><?php echo displayValue($event['event_date']); ?></td>
-        </tr>
-        <tr>
-            <th>Location:</th>
-            <td><?php echo displayValue($event['location']); ?></td>
-        </tr>
-        <tr>
-            <th>Event Type:</th>
-            <td><?php echo displayValue($event['event_type']); ?></td>
-        </tr>
-        <tr>
-            <th>Maximum Participants:</th>
-            <td><?php echo displayValue($event['max_participants']); ?></td>
-        </tr>
-        <tr>
-            <th>Remaining Slots:</th>
-            <td><?php echo $remainingSlots > 0 ? $remainingSlots : "No slots available"; ?></td>
-        </tr>
+        <tr><th>Title:</th><td><?php echo displayValue($event['title']); ?></td></tr>
+        <tr><th>Description:</th><td><?php echo nl2br(displayValue($event['description'])); ?></td></tr>
+        <tr><th>Event Date:</th><td><?php echo displayValue($event['event_date']); ?></td></tr>
+        <tr><th>Location:</th><td><?php echo displayValue($event['location']); ?></td></tr>
+        <tr><th>Event Type:</th><td><?php echo displayValue($event['event_type']); ?></td></tr>
+        <tr><th>Maximum Participants:</th><td><?php echo displayValue($event['max_participants']); ?></td></tr>
+        <tr><th>Remaining Slots:</th><td><?php echo $remainingSlots > 0 ? $remainingSlots : "No slots available"; ?></td></tr>
     </table>
 
-    <!-- Register to Event and Cancel Registration Buttons -->
     <div class="d-flex align-items-center">
         <?php if ($isRegistered): ?>
             <form method="POST">
@@ -149,30 +152,39 @@ function displayValue($value) {
             </form>
         <?php else: ?>
             <form method="POST">
-                <button type="submit" name="register" class="btn btn-primary" <?php echo $remainingSlots <= 0 ? 'disabled' : ''; ?>>
-                    Register to Event
-                </button>
+                <button type="submit" name="register" class="btn btn-primary" <?php echo $remainingSlots <= 0 ? 'disabled' : ''; ?>>Register to Event</button>
             </form>
         <?php endif; ?>
         &nbsp;&nbsp; <!-- Add space between buttons -->
         <a href="events.php" class="btn btn-primary">Back to Events List</a>
     </div>
 
+
+    <br><h3>Feedback and Ratings</h3>
+    <?php if ($isRegistered): ?>
+        <form method="POST">
+            <textarea class= "custom-textbox feedback-textbox" name="feedback" placeholder="Type your feedback here"></textarea>
+            <br/>
+            <select class="custom-dropdown" name="rating" required>
+                <option value="">Select Rating</option>
+                <?php for ($i = 1; $i <= 5; $i++): ?>
+                    <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+                <?php endfor; ?>
+            </select>
+            <br/>
+            <br/>
+            <button type="submit" class="btn btn-primary" name="feedback_submit">Submit Feedback</button>
+        </form>
+    <?php endif; ?>
     <br/>
-    <br/>
-    <!-- List of Registered Participants -->
-    <div class="participants-section">
-        <h3>Registered Participants:</h3>
-        <?php if (count($participants) > 0): ?>
-            <ul>
-                <?php foreach ($participants as $participant): ?>
-                    <li><?php echo htmlspecialchars($participant['full_name']); ?></li>
-                <?php endforeach; ?>
-            </ul>
-        <?php else: ?>
-            <p>No participants registered yet.</p>
-        <?php endif; ?>
-    </div>
+    <?php if ($averageRating): ?>
+        <p><strong>Average Rating:</strong> <?php echo round($averageRating, 2); ?> / 5</p>
+    <?php endif; ?>
+    <ul>
+        <?php foreach ($feedbackList as $feedback): ?>
+            <li><strong><?php echo $feedback['full_name']; ?>:</strong> <?php echo $feedback['feedback']; ?> (Rating: <?php echo $feedback['rating']; ?>)</li>
+        <?php endforeach; ?>
+    </ul>
 </div>
 
 <?php include_once "includes/footer.php"; ?>

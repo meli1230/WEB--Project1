@@ -99,6 +99,11 @@ body {
     color: #000080;
 }
 
+.feedback-textbox {
+    width: 800px !important; /* Set the specific width for this feedback box */
+    max-width: 100%; /* Ensures it doesn’t exceed the parent container’s width */
+}
+
 /*end of style and color changes:*/
 
 
