@@ -30,6 +30,7 @@ $total_pages = ceil($total_events / $events_per_page);
 ?>
 
 <h2>Events Directory</h2>
+<br/>
 
 <!-- Event cards -->
 <div class="row">
@@ -39,11 +40,11 @@ $total_pages = ceil($total_events / $events_per_page);
                 <div class="card-body">
                     <h5 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h5>
                     <p class="card-text">
-                        <strong>Date:</strong> <?php echo htmlspecialchars($row['event_date']); ?>
+                        <strong>Date and Time:</strong> <?php echo htmlspecialchars($row['event_date']); ?>
                     </p>
-                    <a href="details_event.php?id=<?php echo $row['id']; ?>" class="btn btn-primary">Details</a>
-                    <a href="edit_event.php?id=<?php echo $row['id']; ?>" class="btn btn-primary">Edit</a>
-                    <a href="delete_event.php?id=<?php echo $row['id']; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this event?')">Delete</a>
+                    <a href="details_event.php?id=<?php echo $row['id']; ?>" class="btn btnprimary">Details</a>
+                    <a href="edit_event.php?id=<?php echo $row['id']; ?>" class="btn btnprimary">Edit</a>
+                    <a href="delete_event.php?id=<?php echo $row['id']; ?>" class="btn btndanger" onclick="return confirm('Are you sure you want to delete this event?')">Delete</a>
                 </div>
             </div>
         </div>
