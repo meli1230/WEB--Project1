@@ -72,6 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register']) && $user[
             $registerStmt->execute(array($userId, $mentorshipId));
             echo "<p style='color:green;'>You have successfully registered for this mentorship.</p>";
             $isRegistered = true;
+            $mentorship['registered_member_id'] = $userId; // Update mentorship state
         } catch (PDOException $e) {
             echo "<p style='color:red;'>Error registering for the mentorship: " . htmlspecialchars($e->getMessage()) . "</p>";
         }
@@ -110,23 +111,59 @@ $averageRatingStmt = $db->prepare($averageRatingQuery);
 $averageRatingStmt->execute(array($mentorshipId));
 $averageRating = $averageRatingStmt->fetch(PDO::FETCH_ASSOC)['average_rating'];
 
-// Cancel mentorship
+// Cancel mentorship registration (only for registered mentees)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_mentorship'])) {
-    if ($user['status'] === 'mentor') { // Only mentors can cancel the mentorship
-        $cancelQuery = "DELETE FROM mentorships WHERE id = ?";
+    if ($isRegistered && $user['status'] === 'member') { // Ensure user is the registered mentee
+        $cancelQuery = "UPDATE mentorships SET member_id = NULL WHERE id = ? AND member_id = ?";
         $cancelStmt = $db->prepare($cancelQuery);
         try {
-            $cancelStmt->execute(array($mentorshipId));
-            echo "<p style='color:orange;'>Mentorship has been successfully canceled.</p>";
-            header("Location: mentorships.php?message=Mentorship canceled successfully");
-            exit();
+            $cancelStmt->execute(array($mentorshipId, $userId));
+            echo "<p style='color:orange;'>You have successfully canceled your mentorship registration.</p>";
+            $isRegistered = false; // Update the registration status
+            $mentorship['registered_member_id'] = null; // Update mentorship state
         } catch (PDOException $e) {
             echo "<p style='color:red;'>Error canceling mentorship: " . htmlspecialchars($e->getMessage()) . "</p>";
         }
     } else {
-        echo "<p style='color:red;'>Only mentors can cancel mentorships.</p>";
+        echo "<p style='color:red;'>You are not authorized to cancel this mentorship.</p>";
     }
 }
+
+// Handle feedback submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['feedback_submit'])) {
+    $feedback = trim($_POST['feedback']);
+    $rating = intval($_POST['rating']);
+
+    // Validate feedback and rating
+    if (empty($feedback) || $rating < 1 || $rating > 5) {
+        echo "<p style='color:red;'>Please provide valid feedback and a rating between 1 and 5.</p>";
+    } else {
+        // Insert feedback into the database
+        $feedbackQuery = "INSERT INTO mentorship_feedback (mentorship_id, member_id, feedback, rating) 
+                          VALUES (?, ?, ?, ?)";
+        $feedbackStmt = $db->prepare($feedbackQuery);
+        try {
+            $feedbackStmt->execute([$mentorshipId, $userId, $feedback, $rating]);
+            echo "<p style='color:green;'>Thank you for your feedback!</p>";
+
+            // Update the feedback list and average rating dynamically
+            $feedbackList[] = [
+                'full_name' => $_SESSION['full_name'], // Assuming user's full name is in the session
+                'feedback' => $feedback,
+                'rating' => $rating
+            ];
+
+            $averageRatingQuery = "SELECT AVG(rating) AS average_rating FROM mentorship_feedback WHERE mentorship_id = ?";
+            $averageRatingStmt = $db->prepare($averageRatingQuery);
+            $averageRatingStmt->execute([$mentorshipId]);
+            $averageRating = $averageRatingStmt->fetch(PDO::FETCH_ASSOC)['average_rating'];
+        } catch (PDOException $e) {
+            echo "<p style='color:red;'>Error submitting feedback: " . htmlspecialchars($e->getMessage()) . "</p>";
+        }
+    }
+}
+
+
 ?>
 
 <div class="details-container">
@@ -148,25 +185,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_mentorship']))
 
     <br/>
 
-    <!-- Registration Section (only for mentees if no one else is registered) -->
-    <?php if ($user['status'] === 'member' && empty($mentorship['registered_member_id'])): ?>
+    <!-- Registration and Cancel buttons -->
+    <?php if (!$isRegistered && $user['status'] === 'member' && empty($mentorship['registered_member_id'])): ?>
+        <!-- Show Register button if not registered -->
         <div class="registration-section">
             <form method="POST">
                 <button type="submit" name="register" class="btn btn-primary">Register for Mentorship</button>
             </form>
         </div>
-    <?php elseif ($user['status'] === 'member' && !$isRegistered): ?>
-        <p style="color:red;">This mentorship is already taken by another mentee.</p>
-    <?php endif; ?>
-
-    <!-- Cancel Mentorship Section (only for mentors) -->
-    <?php if ($user['status'] === 'mentor'): ?>
+    <?php elseif ($isRegistered && $user['status'] === 'member'): ?>
+        <!-- Show Cancel Registration button if registered -->
         <div class="cancel-mentorship-section" style="margin-top: 20px;">
             <form method="POST">
-                <button type="submit" name="cancel_mentorship" class="btn btn-danger">Cancel Mentorship</button>
+                <button type="submit" name="cancel_mentorship" class="btn btn-danger">Cancel Registration</button>
             </form>
         </div>
     <?php endif; ?>
+
+    <br/>
+    <a href="mentorships.php" class="btn btn-primary">Back to Mentorship List</a>
 
     <!-- Task List (only for registered mentees) -->
     <?php if ($isRegistered && $user['status'] === 'member'): ?>
@@ -192,8 +229,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_mentorship']))
         </div>
     <?php endif; ?>
 
-    <br/>
-    <a href="mentorships.php" class="btn btn-primary">Back to Mentorship List</a>
 </div>
 
 <br><h3>Feedback and Ratings</h3>
