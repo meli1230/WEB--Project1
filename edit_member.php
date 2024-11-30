@@ -5,6 +5,7 @@ include_once "includes/header.php";
 
 $database = new Database(); //create a new instance of the database
 $db = $database->getConnection(); //get the database connection object
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') { //check if the form is submitted using POST method
     $query = "UPDATE members 
                 SET first_name=?, 
