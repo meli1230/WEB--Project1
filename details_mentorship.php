@@ -33,7 +33,8 @@ $query = "SELECT m1.first_name AS mentor_first_name,
                  m1.last_name AS mentor_last_name, 
                  m2.first_name AS mentee_first_name, 
                  m2.last_name AS mentee_last_name, 
-                 mentorships.time_slot 
+                 mentorships.time_slot,
+                 mentorships.member_id AS registered_member_id
           FROM mentorships 
           LEFT JOIN members m1 ON mentorships.mentor_id = m1.id 
           LEFT JOIN members m2 ON mentorships.member_id = m2.id 
@@ -58,17 +59,12 @@ if (!$user || ($user['status'] !== 'member' && $user['status'] !== 'mentor')) {
 }
 
 // Check if the user is already registered for this mentorship
-$checkRegistrationQuery = "SELECT member_id FROM mentorships WHERE id = ?";
-$checkRegistrationStmt = $db->prepare($checkRegistrationQuery);
-$checkRegistrationStmt->execute(array($mentorshipId));
-$currentRegistration = $checkRegistrationStmt->fetch(PDO::FETCH_ASSOC);
+$isRegistered = ($mentorship['registered_member_id'] == $userId);
 
-$isRegistered = $currentRegistration && $currentRegistration['member_id'] == $userId;
-
-// Handle registration (only for mentees)
+// Handle registration (only for mentees, and only if no one else is registered)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register']) && $user['status'] === 'member') {
-    if ($isRegistered) {
-        echo "<p style='color:orange;'>You are already registered for this mentorship.</p>";
+    if (!empty($mentorship['registered_member_id'])) {
+        echo "<p style='color:red;'>This mentorship is already taken by another mentee.</p>";
     } else {
         $registerQuery = "UPDATE mentorships SET member_id = ? WHERE id = ?";
         $registerStmt = $db->prepare($registerQuery);
@@ -99,25 +95,6 @@ $tasksQuery = "SELECT id, task_description, is_completed
 $tasksStmt = $db->prepare($tasksQuery);
 $tasksStmt->execute(array($mentorshipId));
 $tasks = $tasksStmt->fetchAll(PDO::FETCH_ASSOC);
-
-// Handle feedback submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['feedback_submit'])) {
-    $feedback = trim($_POST['feedback']);
-    $rating = intval($_POST['rating']);
-
-    if (!empty($feedback) && $rating > 0 && $rating <= 5) {
-        $feedbackQuery = "INSERT INTO mentorship_feedback (mentorship_id, member_id, feedback, rating) VALUES (?, ?, ?, ?)";
-        $feedbackStmt = $db->prepare($feedbackQuery);
-        try {
-            $feedbackStmt->execute(array($mentorshipId, $userId, $feedback, $rating));
-            echo "<p style='color:green;'>Thank you for your feedback!</p>";
-        } catch (PDOException $e) {
-            echo "<p style='color:red;'>Error submitting feedback: " . htmlspecialchars($e->getMessage()) . "</p>";
-        }
-    } else {
-        echo "<p style='color:red;'>Please provide valid feedback and a rating between 1 and 5.</p>";
-    }
-}
 
 // Fetch and display feedback
 $feedbackQuery = "SELECT feedback, rating, CONCAT(members.first_name, ' ', members.last_name) AS full_name 
@@ -151,6 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_mentorship']))
     }
 }
 ?>
+
 <div class="details-container">
     <h2>Mentorship Details</h2>
     <table class="details-table">
@@ -170,17 +148,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_mentorship']))
 
     <br/>
 
-    <!-- Registration Section (only for mentees) -->
-    <?php if ($user['status'] === 'member'): ?>
+    <!-- Registration Section (only for mentees if no one else is registered) -->
+    <?php if ($user['status'] === 'member' && empty($mentorship['registered_member_id'])): ?>
         <div class="registration-section">
-            <?php if ($isRegistered): ?>
-                <p style="color:green;">You are registered for this mentorship.</p>
-            <?php else: ?>
-                <form method="POST">
-                    <button type="submit" name="register" class="btn btn-primary">Register for Mentorship</button>
-                </form>
-            <?php endif; ?>
+            <form method="POST">
+                <button type="submit" name="register" class="btn btn-primary">Register for Mentorship</button>
+            </form>
         </div>
+    <?php elseif ($user['status'] === 'member' && !$isRegistered): ?>
+        <p style="color:red;">This mentorship is already taken by another mentee.</p>
     <?php endif; ?>
 
     <!-- Cancel Mentorship Section (only for mentors) -->
