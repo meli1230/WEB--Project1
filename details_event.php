@@ -131,6 +131,8 @@ $averageRatingQuery = "SELECT AVG(rating) AS average_rating FROM event_feedback 
 $averageRatingStmt = $db->prepare($averageRatingQuery);
 $averageRatingStmt->execute([$eventId]);
 $averageRating = $averageRatingStmt->fetch(PDO::FETCH_ASSOC)['average_rating'];
+
+
 ?>
 
 <div class="details-container">
@@ -186,5 +188,7 @@ $averageRating = $averageRatingStmt->fetch(PDO::FETCH_ASSOC)['average_rating'];
         <?php endforeach; ?>
     </ul>
 </div>
+
+
 
 <?php include_once "includes/footer.php"; ?>
