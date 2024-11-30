@@ -14,8 +14,18 @@ $db = $database->getConnection();
 // Sorting logic
 $order_by = "event_date ASC"; // Sort by event date (soonest first)
 
+// Filtering logic
+$locationFilter = isset($_GET['location']) ? strtolower(trim($_GET['location'])) : '';
+
 // Base query
-$query = "SELECT * FROM events ORDER BY $order_by LIMIT :offset, :events_per_page";
+$query = "SELECT * FROM events";
+if ($locationFilter === 'online') {
+    $query .= " WHERE LOWER(location) = 'online'";
+} elseif ($locationFilter === 'offline') {
+    $query .= " WHERE LOWER(location) != 'online'";
+}
+$query .= " ORDER BY $order_by LIMIT :offset, :events_per_page";
+
 $stmt = $db->prepare($query);
 $stmt->bindValue(":offset", $offset, PDO::PARAM_INT);
 $stmt->bindValue(":events_per_page", $events_per_page, PDO::PARAM_INT);
@@ -23,6 +33,11 @@ $stmt->execute();
 
 // Get total events count for pagination
 $countQuery = "SELECT COUNT(*) as total_events FROM events";
+if ($locationFilter === 'online') {
+    $countQuery .= " WHERE LOWER(location) = 'online'";
+} elseif ($locationFilter === 'offline') {
+    $countQuery .= " WHERE LOWER(location) != 'online'";
+}
 $countStmt = $db->prepare($countQuery);
 $countStmt->execute();
 $total_events = $countStmt->fetch(PDO::FETCH_ASSOC)['total_events'];
@@ -30,6 +45,19 @@ $total_pages = ceil($total_events / $events_per_page);
 ?>
 
 <h2>Events Directory</h2>
+<br/>
+
+<!-- Filter by location -->
+<div class="filter-options">
+    <form method="GET">
+        <label for="location">Filter by Location:</label>
+        <select name="location" id="location" class="custom-dropdown" onchange="this.form.submit()">
+            <option value="" <?php echo $locationFilter === '' ? 'selected' : ''; ?>>All Locations</option>
+            <option value="online" <?php echo $locationFilter === 'online' ? 'selected' : ''; ?>>Online</option>
+            <option value="offline" <?php echo $locationFilter === 'offline' ? 'selected' : ''; ?>>Offline</option>
+        </select>
+    </form>
+</div>
 <br/>
 
 <!-- Event cards -->
@@ -40,7 +68,8 @@ $total_pages = ceil($total_events / $events_per_page);
                 <div class="card-body">
                     <h5 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h5>
                     <p class="card-text">
-                        <strong>Date and Time:</strong> <?php echo htmlspecialchars($row['event_date']); ?>
+                        <strong>Date and Time:</strong> <?php echo htmlspecialchars($row['event_date']); ?><br>
+                        <strong>Location:</strong> <?php echo htmlspecialchars($row['location']); ?>
                     </p>
                     <a href="details_event.php?id=<?php echo $row['id']; ?>" class="btn btnprimary">Details</a>
                     <a href="edit_event.php?id=<?php echo $row['id']; ?>" class="btn btnprimary">Edit</a>
@@ -55,15 +84,15 @@ $total_pages = ceil($total_events / $events_per_page);
 <!-- Pagination -->
 <div class="pagination">
     <?php if ($page > 1): ?>
-        <a href="?page=<?php echo $page - 1; ?>" class="btn btn-secondary">Previous</a>
+        <a href="?location=<?php echo htmlspecialchars($locationFilter); ?>&page=<?php echo $page - 1; ?>" class="btn btn-secondary">Previous</a>
     <?php endif; ?>
     <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-        <a href="?page=<?php echo $i; ?>" class="btn btn-<?php echo $i == $page ? 'primary' : 'secondary'; ?>">
+        <a href="?location=<?php echo htmlspecialchars($locationFilter); ?>&page=<?php echo $i; ?>" class="btn btn-<?php echo $i == $page ? 'primary' : 'secondary'; ?>">
             <?php echo $i; ?>
         </a>
     <?php endfor; ?>
     <?php if ($page < $total_pages): ?>
-        <a href="?page=<?php echo $page + 1; ?>" class="btn btn-secondary">Next</a>
+        <a href="?location=<?php echo htmlspecialchars($locationFilter); ?>&page=<?php echo $page + 1; ?>" class="btn btn-secondary">Next</a>
     <?php endif; ?>
 </div>
 
