@@ -142,7 +142,7 @@ if (!empty($user['profession'])) {
         <p>No recommendations available at the moment.</p>
     <?php endif; ?>
 </div>
-
+<br/>
 <!--Job recommendations-->
 <div class="form-container">
     <h3>Job Recommendations</h3>
@@ -172,5 +172,65 @@ if (!empty($user['profession'])) {
         <p>No job recommendations available at the moment.</p>
     <?php endif; ?>
 </div>
+
+
+<!-- Mentor-Mentee Matching Section -->
+<div class="form-container">
+    <?php if ($user['status'] === 'mentor'): ?>
+        <h3>Recommended Mentees</h3>
+        <?php
+        // Fetch mentees with matching professions
+        $mentee_recommendations = [];
+        if (!empty($user['profession'])) {
+            $query = "SELECT first_name, last_name, email FROM members WHERE profession = ? AND status = 'member' AND id != ? LIMIT 10";
+            $stmt = $db->prepare($query);
+            $stmt->execute([$user['profession'], $user_id]);
+            $mentee_recommendations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+        ?>
+
+        <?php if (count($mentee_recommendations) > 0): ?>
+            <ul>
+                <?php foreach ($mentee_recommendations as $mentee): ?>
+                    <li>
+                        <strong><?php echo htmlspecialchars($mentee['first_name'] . ' ' . $mentee['last_name']); ?></strong><br>
+                        <em>Email:</em> <?php echo htmlspecialchars($mentee['email']); ?>
+                    </li>
+                    <br>
+                <?php endforeach; ?>
+            </ul>
+        <?php else: ?>
+            <p>No mentees available for your profession at the moment.</p>
+        <?php endif; ?>
+
+    <?php elseif ($user['status'] === 'member'): ?>
+        <h3>Recommended Mentors</h3>
+        <?php
+        // Fetch mentors with matching professions
+        $mentor_recommendations = [];
+        if (!empty($user['profession'])) {
+            $query = "SELECT first_name, last_name, email FROM members WHERE profession = ? AND status = 'mentor' AND id != ? LIMIT 10";
+            $stmt = $db->prepare($query);
+            $stmt->execute([$user['profession'], $user_id]);
+            $mentor_recommendations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+        ?>
+
+        <?php if (count($mentor_recommendations) > 0): ?>
+            <ul>
+                <?php foreach ($mentor_recommendations as $mentor): ?>
+                    <li>
+                        <strong><?php echo htmlspecialchars($mentor['first_name'] . ' ' . $mentor['last_name']); ?></strong><br>
+                        <em>Email:</em> <?php echo htmlspecialchars($mentor['email']); ?>
+                    </li>
+                    <br>
+                <?php endforeach; ?>
+            </ul>
+        <?php else: ?>
+            <p>No mentors available for your profession at the moment.</p>
+        <?php endif; ?>
+    <?php endif; ?>
+</div>
+
 
 <?php include_once "includes/footer.php"; ?>
