@@ -65,6 +65,15 @@ if (!empty($user['profession'])) {
     $stmt->execute([$user['profession'], $user_id]);
     $recommendations = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
+
+// Fetch job recommendations (jobs with a title matching the user's profession)
+$job_recommendations = [];
+if (!empty($user['profession'])) {
+    $query = "SELECT title FROM jobs WHERE title LIKE ? LIMIT 10";
+    $stmt = $db->prepare($query);
+    $stmt->execute(['%' . $user['profession'] . '%']);
+    $job_recommendations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 ?>
 
 <div class="form-container">
@@ -131,6 +140,36 @@ if (!empty($user['profession'])) {
         </ul>
     <?php else: ?>
         <p>No recommendations available at the moment.</p>
+    <?php endif; ?>
+</div>
+
+<!--Job recommendations-->
+<div class="form-container">
+    <h3>Job Recommendations</h3>
+    <?php
+    // Fetch job recommendations (based on the user's profession)
+    $job_recommendations = [];
+    if (!empty($user['profession'])) {
+        $query = "SELECT company, type, experience_level FROM jobs WHERE title LIKE ? LIMIT 10";
+        $stmt = $db->prepare($query);
+        $stmt->execute(['%' . $user['profession'] . '%']);
+        $job_recommendations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    ?>
+
+    <?php if (count($job_recommendations) > 0): ?>
+        <ul>
+            <?php foreach ($job_recommendations as $job): ?>
+                <li>
+                    <strong>Company:</strong> <?php echo htmlspecialchars($job['company']); ?><br>
+                    <strong>Type:</strong> <?php echo htmlspecialchars($job['type']); ?><br>
+                    <strong>Experience Level:</strong> <?php echo htmlspecialchars($job['experience_level']); ?>
+                </li>
+                <br>
+            <?php endforeach; ?>
+        </ul>
+    <?php else: ?>
+        <p>No job recommendations available at the moment.</p>
     <?php endif; ?>
 </div>
 
