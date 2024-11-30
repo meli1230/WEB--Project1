@@ -132,7 +132,7 @@ $total_pages = ceil($total_jobs / $jobs_per_page);
 <div class="row">
     <?php while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
         <div class="col-md-4">
-            <div class="card job-card">
+            <div class="card member-card">
                 <div class="card-body">
                     <h5 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h5>
                     <p class="card-text">
@@ -145,7 +145,6 @@ $total_pages = ceil($total_jobs / $jobs_per_page);
                     <a href="delete_job.php?id=<?php echo $row['id']; ?>" class="btn btndanger" onclick="return confirm('Are you sure?')">Delete</a>
                 </div>
             </div>
-            <br/>
         </div>
     <?php endwhile; ?>
 </div>
