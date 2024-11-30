@@ -152,6 +152,7 @@ $professionStmt->execute();
         </div>
     <?php endwhile; ?>
 </div>
+<br/>
 
 <!-- Pagination -->
 <div class="pagination">

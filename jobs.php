@@ -139,14 +139,13 @@ $total_pages = ceil($total_jobs / $jobs_per_page);
                         <strong>Company:</strong> <?php echo htmlspecialchars($row['company']); ?>
                         <br>
                         <strong>Type:</strong> <?php echo htmlspecialchars($row['type']); ?>
-                        <br>
-                        <strong>Experience Level:</strong> <?php echo htmlspecialchars($row['experience_level']); ?>
                     </p>
                     <a href="details_job.php?id=<?php echo $row['id']; ?>" class="btn btnprimary">Details</a>
                     <a href="edit_job.php?id=<?php echo $row['id']; ?>" class="btn btnprimary">Edit</a>
                     <a href="delete_job.php?id=<?php echo $row['id']; ?>" class="btn btndanger" onclick="return confirm('Are you sure?')">Delete</a>
                 </div>
             </div>
+            <br/>
         </div>
     <?php endwhile; ?>
 </div>
