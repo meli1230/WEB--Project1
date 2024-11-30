@@ -112,7 +112,7 @@ $total_pages = ceil($total_resources / $resources_per_page);
         <input type="text" class="custom-textbox" name="query" placeholder="Search resources..." value="<?php echo htmlspecialchars($searchQuery); ?>">
         <input type="hidden" name="type" value="<?php echo htmlspecialchars($resourceType); ?>">
         <button type="submit" class="btn btn-primary">Search</button>
-        <a href="resources.php" class="btn btn-primary">Reset</a>
+        <a href="resource_hub.php" class="btn btn-primary">Reset</a>
     </form>
 </div>
 <br/>
