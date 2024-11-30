@@ -12,31 +12,30 @@ $database = new Database();
 $db = $database->getConnection();
 
 // Filtering logic
-$selectedCompanies = isset($_GET['company']) ? $_GET['company'] : [];
-$selectedTypes = isset($_GET['type']) ? $_GET['type'] : [];
-$selectedExperienceLevels = isset($_GET['experience_level']) ? $_GET['experience_level'] : [];
+$companyFilter = isset($_GET['company']) ? $_GET['company'] : '';
+$typeFilter = isset($_GET['type']) ? $_GET['type'] : '';
+$experienceLevelFilter = isset($_GET['experience_level']) ? $_GET['experience_level'] : '';
+
+// Search functionality
 $searchQuery = isset($_GET['query']) ? trim($_GET['query']) : '';
 
 // Base query
 $query = "SELECT * FROM jobs WHERE 1=1";
 
 // Add filters to query
-if (!empty($selectedCompanies)) {
-    $placeholders = implode(',', array_fill(0, count($selectedCompanies), '?'));
-    $query .= " AND company IN ($placeholders)";
+if ($companyFilter) {
+    $query .= " AND company = :company";
 }
-if (!empty($selectedTypes)) {
-    $placeholders = implode(',', array_fill(0, count($selectedTypes), '?'));
-    $query .= " AND type IN ($placeholders)";
+if ($typeFilter) {
+    $query .= " AND type = :type";
 }
-if (!empty($selectedExperienceLevels)) {
-    $placeholders = implode(',', array_fill(0, count($selectedExperienceLevels), '?'));
-    $query .= " AND experience_level IN ($placeholders)";
+if ($experienceLevelFilter) {
+    $query .= " AND experience_level = :experience_level";
 }
 
 // Add search criteria to query
 if ($searchQuery) {
-    $query .= " AND (title LIKE ? OR company LIKE ?)";
+    $query .= " AND (title LIKE :search OR company LIKE :search)";
 }
 
 $query .= " LIMIT :offset, :jobs_per_page";
@@ -44,114 +43,89 @@ $query .= " LIMIT :offset, :jobs_per_page";
 $stmt = $db->prepare($query);
 
 // Bind parameters
-$bindValues = [];
-if (!empty($selectedCompanies)) {
-    $bindValues = array_merge($bindValues, $selectedCompanies);
+if ($companyFilter) {
+    $stmt->bindParam(":company", $companyFilter, PDO::PARAM_STR);
 }
-if (!empty($selectedTypes)) {
-    $bindValues = array_merge($bindValues, $selectedTypes);
+if ($typeFilter) {
+    $stmt->bindParam(":type", $typeFilter, PDO::PARAM_STR);
 }
-if (!empty($selectedExperienceLevels)) {
-    $bindValues = array_merge($bindValues, $selectedExperienceLevels);
+if ($experienceLevelFilter) {
+    $stmt->bindParam(":experience_level", $experienceLevelFilter, PDO::PARAM_STR);
 }
 if ($searchQuery) {
-    $bindValues[] = "%$searchQuery%";
-    $bindValues[] = "%$searchQuery%";
-}
-foreach ($bindValues as $index => $value) {
-    $stmt->bindValue($index + 1, $value, PDO::PARAM_STR);
+    $searchTerm = "%$searchQuery%";
+    $stmt->bindParam(":search", $searchTerm, PDO::PARAM_STR);
 }
 $stmt->bindValue(":offset", $offset, PDO::PARAM_INT);
 $stmt->bindValue(":jobs_per_page", $jobs_per_page, PDO::PARAM_INT);
 
 $stmt->execute();
 
-// Get distinct values for filters
-$companyStmt = $db->query("SELECT DISTINCT company FROM jobs ORDER BY company ASC");
-$typeStmt = $db->query("SELECT DISTINCT type FROM jobs ORDER BY type ASC");
-$experienceLevelStmt = $db->query("SELECT DISTINCT experience_level FROM jobs ORDER BY experience_level ASC");
-
 // Get total jobs count for pagination
 $countQuery = "SELECT COUNT(*) as total_jobs FROM jobs WHERE 1=1";
 
-if (!empty($selectedCompanies)) {
-    $placeholders = implode(',', array_fill(0, count($selectedCompanies), '?'));
-    $countQuery .= " AND company IN ($placeholders)";
+if ($companyFilter) {
+    $countQuery .= " AND company = :company";
 }
-if (!empty($selectedTypes)) {
-    $placeholders = implode(',', array_fill(0, count($selectedTypes), '?'));
-    $countQuery .= " AND type IN ($placeholders)";
+if ($typeFilter) {
+    $countQuery .= " AND type = :type";
 }
-if (!empty($selectedExperienceLevels)) {
-    $placeholders = implode(',', array_fill(0, count($selectedExperienceLevels), '?'));
-    $countQuery .= " AND experience_level IN ($placeholders)";
+if ($experienceLevelFilter) {
+    $countQuery .= " AND experience_level = :experience_level";
 }
 if ($searchQuery) {
-    $countQuery .= " AND (title LIKE ? OR company LIKE ?)";
+    $countQuery .= " AND (title LIKE :search OR company LIKE :search)";
 }
 
 $countStmt = $db->prepare($countQuery);
-foreach ($bindValues as $index => $value) {
-    $countStmt->bindValue($index + 1, $value, PDO::PARAM_STR);
+if ($companyFilter) {
+    $countStmt->bindParam(":company", $companyFilter, PDO::PARAM_STR);
+}
+if ($typeFilter) {
+    $countStmt->bindParam(":type", $typeFilter, PDO::PARAM_STR);
+}
+if ($experienceLevelFilter) {
+    $countStmt->bindParam(":experience_level", $experienceLevelFilter, PDO::PARAM_STR);
+}
+if ($searchQuery) {
+    $countStmt->bindParam(":search", $searchTerm, PDO::PARAM_STR);
 }
 $countStmt->execute();
 $total_jobs = $countStmt->fetch(PDO::FETCH_ASSOC)['total_jobs'];
 $total_pages = ceil($total_jobs / $jobs_per_page);
+
 ?>
 
 <h2>Jobs Board</h2>
 
-<!-- Advanced Filters -->
-<br/>
+<!-- Filter options -->
 <div class="filter-options">
     <form method="GET">
-        <div class="filter-grid">
-            <!-- Filter by Company -->
-            <div class="filter-column">
-                <h5>Filter by Company</h5>
-                <?php while ($row = $companyStmt->fetch(PDO::FETCH_ASSOC)): ?>
-                    <label>
-                        <input type="checkbox" class="custom-checkbox" name="company[]" value="<?php echo htmlspecialchars($row['company']); ?>"
-                            <?php echo in_array($row['company'], $selectedCompanies) ? 'checked' : ''; ?>>
-                        <?php echo htmlspecialchars($row['company']); ?>
-                    </label><br>
-                <?php endwhile; ?>
-            </div>
-
-            <!-- Filter by Job Type -->
-            <div class="filter-column">
-                <h5>Filter by Job Type</h5>
-                <?php while ($row = $typeStmt->fetch(PDO::FETCH_ASSOC)): ?>
-                    <label>
-                        <input type="checkbox" class="custom-checkbox" name="type[]" value="<?php echo htmlspecialchars($row['type']); ?>"
-                            <?php echo in_array($row['type'], $selectedTypes) ? 'checked' : ''; ?>>
-                        <?php echo htmlspecialchars($row['type']); ?>
-                    </label><br>
-                <?php endwhile; ?>
-            </div>
-
-            <!-- Filter by Experience Level -->
-            <div class="filter-column">
-                <h5>Filter by Experience Level</h5>
-                <?php while ($row = $experienceLevelStmt->fetch(PDO::FETCH_ASSOC)): ?>
-                    <label>
-                        <input type="checkbox" class="custom-checkbox" name="experience_level[]" value="<?php echo htmlspecialchars($row['experience_level']); ?>"
-                            <?php echo in_array($row['experience_level'], $selectedExperienceLevels) ? 'checked' : ''; ?>>
-                        <?php echo htmlspecialchars($row['experience_level']); ?>
-                    </label><br>
-                <?php endwhile; ?>
-            </div>
-        </div>
-
-        <!-- Search button for filtering -->
-        <div class="filter-button">
-            <button type="submit" class="btn btn-primary">Apply Filters</button>
-            <a href="jobs.php" class="btn btn-secondary">Reset Filters</a>
-        </div>
+        <select name="type" class="custom-dropdown" onchange="this.form.submit()">
+            <option value="">All Types</option>
+            <option value="fulltime" <?php echo $typeFilter == 'fulltime' ? 'selected' : ''; ?>>Full-time</option>
+            <option value="parttime" <?php echo $typeFilter == 'parttime' ? 'selected' : ''; ?>>Part-time</option>
+            <option value="internship" <?php echo $typeFilter == 'internship' ? 'selected' : ''; ?>>Internship</option>
+        </select>
+        <select name="experience_level" class="custom-dropdown" onchange="this.form.submit()">
+            <option value="">All Levels</option>
+            <option value="junior" <?php echo $experienceLevelFilter == 'junior' ? 'selected' : ''; ?>>Junior</option>
+            <option value="senior" <?php echo $experienceLevelFilter == 'senior' ? 'selected' : ''; ?>>Senior</option>
+            <option value="expert" <?php echo $experienceLevelFilter == 'expert' ? 'selected' : ''; ?>>Expert</option>
+        </select>
+        <input type="hidden" name="query" value="<?php echo htmlspecialchars($searchQuery); ?>">
     </form>
 </div>
-
 <br/>
+
+<!-- Search functionality -->
+<div class="search-options">
+    <form method="GET">
+        <input type="text" class="custom-textbox" name="query" placeholder="Search jobs..." value="<?php echo htmlspecialchars($searchQuery); ?>">
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a href="jobs.php" class="btn btn-primary">Reset</a>
+    </form>
+</div>
 <br/>
 
 <!-- Job cards -->
@@ -181,15 +155,15 @@ $total_pages = ceil($total_jobs / $jobs_per_page);
 <!-- Pagination -->
 <div class="pagination">
     <?php if ($page > 1): ?>
-        <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page - 1])); ?>" class="btn btn-secondary">Previous</a>
+        <a href="?page=<?php echo $page - 1; ?>" class="btn btn-secondary">Previous</a>
     <?php endif; ?>
     <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-        <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $i])); ?>" class="btn btn-<?php echo $i == $page ? 'primary' : 'secondary'; ?>">
+        <a href="?page=<?php echo $i; ?>" class="btn btn-<?php echo $i == $page ? 'primary' : 'secondary'; ?>">
             <?php echo $i; ?>
         </a>
     <?php endfor; ?>
     <?php if ($page < $total_pages): ?>
-        <a href="?<?php echo http_build_query(array_merge($_GET, ['page' => $page + 1])); ?>" class="btn btn-secondary">Next</a>
+        <a href="?page=<?php echo $page + 1; ?>" class="btn btn-secondary">Next</a>
     <?php endif; ?>
 </div>
 
