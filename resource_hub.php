@@ -30,8 +30,7 @@ if ($resourceType === 'all') {
     // Build a UNION query for all tables
     $queries = [];
     foreach ($tableMap as $key => $tableName) {
-        // Each table should have the same columns: title, link
-        $subQuery = "SELECT title, link FROM $tableName WHERE 1=1";
+        $subQuery = "SELECT title, link, '$key' AS resource_type FROM $tableName WHERE 1=1";
         if ($searchQuery) {
             $subQuery .= " AND (title LIKE :search)";
         }
@@ -41,13 +40,14 @@ if ($resourceType === 'all') {
 } else {
     $table = isset($tableMap[$resourceType]) ? $tableMap[$resourceType] : null;
     if ($table) {
-        $query = "SELECT title, link FROM $table WHERE 1=1";
+        $query = "SELECT title, link, '$resourceType' AS resource_type FROM $table WHERE 1=1";
         if ($searchQuery) {
             $query .= " AND (title LIKE :search)";
         }
         $query .= " ORDER BY id DESC LIMIT :offset, :resources_per_page";
     }
 }
+
 
 $stmt = $db->prepare($query);
 
@@ -117,7 +117,6 @@ $total_pages = ceil($total_resources / $resources_per_page);
 </div>
 <br/>
 
-<!-- Resource cards -->
 <div class="row">
     <?php if ($stmt): ?>
         <?php while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
@@ -125,7 +124,13 @@ $total_pages = ceil($total_resources / $resources_per_page);
                 <div class="card member-card">
                     <div class="card-body">
                         <h5 class="card-title"><?php echo htmlspecialchars($row['title']); ?></h5>
-                        <a href="<?php echo htmlspecialchars($row['link']); ?>" class="btn btnprimary">View</a>
+                        <?php if (isset($row['resource_type']) && $row['resource_type'] === 'downloads'): ?>
+                            <!-- Download button for downloadables -->
+                            <a href="download.php?file=<?php echo urlencode($row['link']); ?>" class="btn btnprimary">Download</a>
+                        <?php else: ?>
+                            <!-- View button for other resources -->
+                            <a href="<?php echo htmlspecialchars($row['link']); ?>" class="btn btnprimary" target="_blank">View</a>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <br/>
@@ -135,6 +140,7 @@ $total_pages = ceil($total_resources / $resources_per_page);
         <p>No resources found.</p>
     <?php endif; ?>
 </div>
+
 <br/>
 
 <!-- Pagination -->
