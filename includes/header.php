@@ -33,6 +33,9 @@ session_start();
                 <li class="nav-item"><a class="nav-link" href="jobs.php">Jobs</a></li>
                 <li class="nav-item"><a class="nav-link" href="add_job.php">Add Job</a></li>
                 <li class="nav-item"><a class="nav-link" href="resource_hub.php">Resource Hub</a></li>
+                <li class="nav-item"><a class="nav-link" href="events.php">Events</a></li>
+                <li class="nav-item"><a class="nav-link" href="add_event.php">Add Event</a></li>
+
             </ul>
         </div>
 
