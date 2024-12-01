@@ -59,8 +59,10 @@ $total_pages = ceil($total_mentorships / $mentorships_per_page);
                         ?>
                     </p>
                     <a href="details_mentorship.php?id=<?php echo $row['id']; ?>" class="btn btnprimary">Details</a>
-                    <a href="edit_mentorship.php?id=<?php echo $row['id']; ?>" class="btn btnprimary">Edit</a>
-                    <a href="delete_mentorship.php?id=<?php echo $row['id']; ?>" class="btn btndanger" onclick="return confirm('Are you sure you want to delete this mentorship session?')">Delete</a>
+                    <?php if (isset($_SESSION['status']) && ($_SESSION['status'] === 'admin' || $_SESSION['status'] === 'mentor')): ?>
+                        <a href="edit_mentorship.php?id=<?php echo $row['id']; ?>" class="btn btnprimary">Edit</a>
+                        <a href="delete_mentorship.php?id=<?php echo $row['id']; ?>" class="btn btndanger" onclick="return confirm('Are you sure you want to delete this mentorship session?')">Delete</a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

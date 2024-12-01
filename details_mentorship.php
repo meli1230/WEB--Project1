@@ -12,11 +12,6 @@ function displayValue($value) {
     return !empty($value) ? htmlspecialchars($value) : "N/A";
 }
 
-// Ensure the user is logged in
-if (!isset($_SESSION['user_id'])) {
-    die("<p style='color:red;'>Access denied. Please log in to access mentorship details.</p>");
-}
-
 $database = new Database();
 $db = $database->getConnection(); // Get the database connection object
 
@@ -53,10 +48,6 @@ $checkRoleQuery = "SELECT status FROM members WHERE id = ?";
 $checkRoleStmt = $db->prepare($checkRoleQuery);
 $checkRoleStmt->execute(array($userId));
 $user = $checkRoleStmt->fetch(PDO::FETCH_ASSOC);
-
-if (!$user || ($user['status'] !== 'member' && $user['status'] !== 'mentor')) {
-    die("<p style='color:red;'>Access denied. Only mentors and members can view this page.</p>");
-}
 
 // Check if the user is already registered for this mentorship
 $isRegistered = ($mentorship['registered_member_id'] == $userId);
