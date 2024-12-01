@@ -45,7 +45,9 @@ session_start();
                 <?php if (isset($_SESSION['status']) && ($_SESSION['status'] === 'admin' || $_SESSION['status'] === 'mentor')): ?>
                     <li class="nav-item"><a class="nav-link" href="add_event.php">Add Event</a></li>
                 <?php endif; ?>
-                <li class="nav-item"><a class="nav-link" href="mentorships.php">Mentorship</a></li>
+                <?php if (isset($_SESSION['status']) && ($_SESSION['status'] === 'admin' || $_SESSION['status'] === 'mentor' || $_SESSION['status'] === 'member')): ?>
+                    <li class="nav-item"><a class="nav-link" href="mentorships.php">Mentorship</a></li>
+                <?php endif; ?>
                 <?php if (isset($_SESSION['status']) && ($_SESSION['status'] === 'admin' || $_SESSION['status'] === 'mentor')): ?>
                     <li class="nav-item"><a class="nav-link" href="add_mentorship.php">Add Mentorship Slot</a></li>
                 <?php endif; ?>

@@ -13,7 +13,8 @@ function displayValue($value) {
 
 // Ensure the user is logged in
 if (!isset($_SESSION['user_id'])) {
-    die("<p style='color:red;'>Access denied. Please log in to register for events.</p>");
+    header("Location: login.php");
+    exit();
 }
 
 $database = new Database();
