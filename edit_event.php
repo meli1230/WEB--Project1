@@ -5,7 +5,7 @@ include_once "includes/header.php";
 $database = new Database();
 $db = $database->getConnection();
 
-// Fetch mentors for the "Created By" dropdown
+// Fetch mentors
 $mentorQuery = "SELECT id, CONCAT(first_name, ' ', last_name) AS name FROM members WHERE status = 'mentor'";
 $mentorStmt = $db->prepare($mentorQuery);
 $mentorStmt->execute();

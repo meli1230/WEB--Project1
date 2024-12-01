@@ -2,7 +2,6 @@
 include_once "config/database.php";
 include_once "includes/header.php";
 
-// Determine resource type (default is 'all')
 $resourceType = isset($_GET['type']) ? $_GET['type'] : 'all';
 
 // Number of resources per page
@@ -25,12 +24,11 @@ $tableMap = [
 // Search functionality
 $searchQuery = isset($_GET['query']) ? trim($_GET['query']) : '';
 
-// Initialize query
 if ($resourceType === 'all') {
     // Build a UNION query for all tables
     $queries = [];
     foreach ($tableMap as $key => $tableName) {
-        $subQuery = "SELECT title, link, '$key' AS resource_type FROM $tableName WHERE 1=1";
+        $subQuery = "SELECT title, link, '$key' AS resource_type FROM $tableName WHERE 1=1"; //key is a constant string in the query result for every row
         if ($searchQuery) {
             $subQuery .= " AND (title LIKE :search)";
         }

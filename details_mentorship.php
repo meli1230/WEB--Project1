@@ -7,7 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start(); // Ensure session is started
 }
 
-// Helper function to display "N/A" for missing values
+// Display "N/A" for missing values
 function displayValue($value) {
     return !empty($value) ? htmlspecialchars($value) : "N/A";
 }
@@ -15,13 +15,8 @@ function displayValue($value) {
 $database = new Database();
 $db = $database->getConnection(); // Get the database connection object
 
-// Validate and sanitize mentorship ID
-if (!isset($_GET['id']) || empty($_GET['id']) || !is_numeric($_GET['id'])) {
-    die("<p style='color:red;'>Invalid mentorship ID provided.</p>");
-}
-
-$mentorshipId = intval($_GET['id']); // Sanitize mentorship ID
-$userId = intval($_SESSION['user_id']); // Ensure user ID is an integer
+$mentorshipId = $_GET['id'];
+$userId = $_SESSION['user_id'];
 
 // Fetch mentorship details
 $query = "SELECT m1.first_name AS mentor_first_name, 
@@ -37,10 +32,6 @@ $query = "SELECT m1.first_name AS mentor_first_name,
 $stmt = $db->prepare($query);
 $stmt->execute(array($mentorshipId));
 
-if ($stmt->rowCount() === 0) {
-    die("<p style='color:red;'>Mentorship not found.</p>");
-}
-
 $mentorship = $stmt->fetch(PDO::FETCH_ASSOC);
 
 // Fetch user role
@@ -52,7 +43,7 @@ $user = $checkRoleStmt->fetch(PDO::FETCH_ASSOC);
 // Check if the user is already registered for this mentorship
 $isRegistered = ($mentorship['registered_member_id'] == $userId);
 
-// Handle registration (only for mentees, and only if no one else is registered)
+// Registration (only for mentees, and only if no one else is registered)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register']) && $user['status'] === 'member') {
     if (!empty($mentorship['registered_member_id'])) {
         echo "<p style='color:red;'>This mentorship is already taken by another mentee.</p>";
@@ -70,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register']) && $user[
     }
 }
 
-// Handle task completion (only for registered mentees)
+// Task completion (only for registered mentees)
 if ($isRegistered && $user['status'] === 'member' && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['task_ids'])) {
     foreach ($_POST['task_ids'] as $taskId) {
         $updateQuery = "UPDATE mentorship_progress SET is_completed = 1 WHERE id = ? AND mentorship_id = ?";
@@ -120,14 +111,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_mentorship']))
     }
 }
 
-// Handle feedback submission
+// Feedback submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['feedback_submit'])) {
     $feedback = trim($_POST['feedback']);
     $rating = intval($_POST['rating']);
 
     // Validate feedback and rating
-    if (empty($feedback) || $rating < 1 || $rating > 5) {
-        echo "<p style='color:red;'>Please provide valid feedback and a rating between 1 and 5.</p>";
+    if (empty($feedback)) {
+        echo "<p style='color:red;'>Please provide feedback.</p>";
     } else {
         // Insert feedback into the database
         $feedbackQuery = "INSERT INTO mentorship_feedback (mentorship_id, member_id, feedback, rating) 
@@ -139,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['feedback_submit'])) {
 
             // Update the feedback list and average rating dynamically
             $feedbackList[] = [
-                'full_name' => $_SESSION['full_name'], // Assuming user's full name is in the session
+                'full_name' => $_SESSION['full_name'],
                 'feedback' => $feedback,
                 'rating' => $rating
             ];

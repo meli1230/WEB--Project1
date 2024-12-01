@@ -2,7 +2,7 @@
 // Include database configuration
 include_once "config/database.php";
 
-// Get the requested file identifier (link) from the URL
+// Get the requested link from the URL
 $fileIdentifier = isset($_GET['file']) ? $_GET['file'] : null;
 
 if (!$fileIdentifier) {
@@ -30,7 +30,7 @@ try {
     $filePath = $row['link']; // Relative file path stored in the database
     $absolutePath = realpath($filePath); // Resolve the absolute path
 
-    // Validate the file path to prevent directory traversal attacks
+    // Validate the file path
     if ($absolutePath && file_exists($absolutePath)) {
         // Set headers to force file download
         header('Content-Description: File Transfer');

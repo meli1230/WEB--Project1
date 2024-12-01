@@ -2,7 +2,7 @@
 include_once "config/database.php";
 include_once "includes/header.php";
 
-$user_id = $_SESSION['user_id']; // Assuming the mentor's ID is stored in the session
+$user_id = $_SESSION['user_id'];
 
 $database = new Database();
 $db = $database->getConnection();
@@ -13,25 +13,15 @@ $stmt = $db->prepare($query);
 $stmt->execute([$user_id]);
 $mentor = $stmt->fetch(PDO::FETCH_ASSOC);
 
-/*
-if (!$mentor) {
-    die("Access denied. You are not authorized to create mentorship slots.");
-}
-*/
-
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Insert new mentorship slot
-    $query = "INSERT INTO mentorships (
-                     mentor_id, 
-                     time_slot
-                ) 
-               VALUES (?, ?)";
+    $query = "INSERT INTO mentorships (mentor_id, time_slot) VALUES (?, ?)";
     $stmt = $db->prepare($query);
     try {
         $stmt->execute([
             $user_id, // Automatically use the logged-in mentor's ID
-            $_POST['time_slot']
+            $_POST['time_slot'] //the name of the input element
         ]);
         header("Location: mentorships.php");
         exit();

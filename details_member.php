@@ -31,7 +31,7 @@ if ($stmt->rowCount() == 0) {
 // Fetch the member data
 $member = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Helper function to display "N/A" for missing values
+// Display "N/A" for missing values
 function displayValue($value) {
     return !empty($value) ? htmlspecialchars($value) : "N/A";
 }

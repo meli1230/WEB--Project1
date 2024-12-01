@@ -7,33 +7,19 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start(); // Ensure session is started
 }
 
-// Ensure the user is logged in
-if (!isset($_SESSION['user_id'])) {
-    die("<p style='color:red;'>Access denied. Please log in to access job details.</p>");
-}
-
 $database = new Database();
 $db = $database->getConnection(); // Get the database connection object
 
-// Validate and sanitize job ID
-if (!isset($_GET['id']) || empty($_GET['id']) || !is_numeric($_GET['id'])) {
-    die("<p style='color:red;'>Invalid job ID provided.</p>");
-}
-
-$jobId = intval($_GET['id']); // Sanitize job ID
+$jobId = $_GET['id'];
 
 // Fetch the job's details
 $query = "SELECT title, company, type, experience_level FROM jobs WHERE id = ?";
 $stmt = $db->prepare($query);
 $stmt->execute([$jobId]);
 
-if ($stmt->rowCount() === 0) {
-    die("<p style='color:red;'>Job not found.</p>");
-}
-
 $job = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Handle the "Apply to Job" button click
+// Apply to Job button
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['apply'])) {
     $userId = $_SESSION['user_id'];
 
@@ -67,7 +53,7 @@ $applicantsStmt = $db->prepare($applicantsQuery);
 $applicantsStmt->execute([$jobId]);
 $applicants = $applicantsStmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Helper function to display "N/A" for missing values
+// Display "N/A" for missing values
 function displayValue($value) {
     return !empty($value) ? htmlspecialchars($value) : "N/A";
 }

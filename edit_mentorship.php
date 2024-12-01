@@ -5,7 +5,7 @@ include_once "includes/header.php";
 $database = new Database();
 $db = $database->getConnection();
 
-$user_id = $_SESSION['user_id']; // Assuming the mentor's ID is stored in the session
+$user_id = $_SESSION['user_id'];
 
 // Fetch the mentorship details to ensure the logged-in user is the mentor
 $query = "SELECT * FROM mentorships WHERE id = ? AND mentor_id = ?";
@@ -13,13 +13,7 @@ $stmt = $db->prepare($query);
 $stmt->execute([$_GET['id'], $user_id]);
 $mentorship = $stmt->fetch(PDO::FETCH_ASSOC);
 
-/*
-if (!$mentorship) {
-    die("Access denied. You are not authorized to edit this mentorship.");
-}
-*/
-
-// Handle form submission to update mentorship
+// Update mentorship
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Update mentorship details
     if (!empty($_POST['time_slot'])) {
@@ -28,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->execute([$_POST['time_slot'], $_GET['id']]);
     }
 
-    // Handle progress tracking tasks
+    // Tasks
     if (!empty($_POST['tasks'])) {
         foreach ($_POST['tasks'] as $task_id => $task_description) {
             if (!empty($task_description)) {
@@ -50,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    // Handle task deletion
+    // Task deletion
     if (!empty($_POST['delete_task_id'])) {
         foreach ($_POST['delete_task_id'] as $task_id) {
             $query = "DELETE FROM mentorship_progress WHERE id = ? AND mentorship_id = ?";
@@ -59,13 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
     }
 
-    // Redirect to the members card after updating (Update button clicked)
+    // Redirect to the members card after updating
     if (!empty($_POST['update'])) {
         header("Location: mentorships.php"); // Replace 'mentorships.php' with the members card URL if different
         exit();
     }
-
-    // Reload the page to reflect changes after task deletion or additions
     header("Location: edit_mentorship.php?id=" . $_GET['id']);
     exit();
 }
@@ -104,8 +96,6 @@ $progress_tasks = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
         <button type="button" class="btn btn-secondary" onclick="addNewTask()">Add Another Task</button>
         <br/><br/>
-
-        <!-- Update button to redirect to the mentorships or members card -->
         <button type="submit" name="update" value="1" class="btn btn-primary">Update Mentorship</button>
     </form>
 </div>
@@ -113,11 +103,11 @@ $progress_tasks = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <script>
     // JavaScript to dynamically add new task inputs
     function addNewTask() {
-        const container = document.getElementById('new-tasks-container');
+        const container = document.getElementById('new-tasks-container'); //element where the tasks inputs will be appended
         const newTaskDiv = document.createElement('div');
         newTaskDiv.className = 'form-group';
         newTaskDiv.innerHTML = '<input type="text" name="new_tasks[]" class="form-control" placeholder="New task description">';
-        container.appendChild(newTaskDiv);
+        container.appendChild(newTaskDiv); //appends the div, making it part of the DOM
     }
 </script>
 

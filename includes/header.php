@@ -18,14 +18,14 @@ session_start();
     <div class="container-fluid">
         <!-- Left Section -->
         <div class="navbar-left d-flex align-items-center">
-            <button id="dark-mode-toggler" class="btn btn-darkmode">Dark Mode</button>
+            <button id="dark-mode-toggler" class="btn btn-darkmode">Dark Mode</button> <!--Dark mode button-->
             <a class="navbar-brand d-flex align-items-center" href="index.php">
                 <img src="attachments/logo.png" alt="Logo" class="navbar-logo">
                 Women Techpower Platform
             </a>
         </div>
 
-        <!-- Toggler Button -->
+        <!-- Toggler Button - for smaller screen -->
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -53,13 +53,15 @@ session_start();
                 <?php endif; ?>
             </ul>
 
-            <!-- Right Section -->
+            <!-- Right-side Section -->
             <ul class="navbar-nav ml-auto">
                 <?php if (!isset($_SESSION['user_id'])): ?>
                     <li class="nav-item"><a class="nav-link" href="add_member.php">Register</a></li>
                 <?php endif; ?>
-                <?php if (isset($_SESSION['user_id'])): ?>
+                <?php if (isset($_SESSION['user_id']) && ($_SESSION['status']) && ($_SESSION['status'] != 'admin')): ?>
                     <li class="nav-item"><a class="nav-link" href="account_details.php">Account</a></li>
+                <?php endif; ?>
+                <?php if (isset($_SESSION['user_id'])): ?>
                     <li class="nav-item"><a class="nav-link" href="logout.php">Logout</a></li>
                     <!-- Welcome Text Now Inside the Right Section -->
                     <span class="navbar-text text-light ml-3">

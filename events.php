@@ -2,7 +2,7 @@
 include_once "config/database.php";
 include_once "includes/header.php";
 
-// Pagination variables
+// Pagination
 $events_per_page = 6;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 if ($page < 1) $page = 1;
@@ -17,7 +17,6 @@ $order_by = "event_date ASC"; // Sort by event date (soonest first)
 // Filtering logic
 $locationFilter = isset($_GET['location']) ? strtolower(trim($_GET['location'])) : '';
 
-// Base query
 $query = "SELECT * FROM events";
 if ($locationFilter === 'online') {
     $query .= " WHERE LOWER(location) = 'online'";

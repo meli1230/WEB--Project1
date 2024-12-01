@@ -31,7 +31,6 @@ $professionFilter = isset($_GET['profession']) ? $_GET['profession'] : '';
 // Search functionality
 $searchQuery = isset($_GET['query']) ? trim($_GET['query']) : '';
 
-// Base query
 $query = "SELECT * FROM members WHERE status = :status";
 
 // Add profession filter to query

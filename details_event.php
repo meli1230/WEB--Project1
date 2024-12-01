@@ -20,22 +20,12 @@ if (!isset($_SESSION['user_id'])) {
 $database = new Database();
 $db = $database->getConnection(); // Get the database connection object
 
-// Validate and sanitize event ID
-if (!isset($_GET['id']) || empty($_GET['id']) || !is_numeric($_GET['id'])) {
-    die("<p style='color:red;'>Invalid event ID provided.</p>");
-}
-
-$eventId = intval($_GET['id']); // Sanitize event ID
+$eventId = $_GET['id'];
 
 // Fetch the event's details
-$query = "SELECT title, description, event_date, location, event_type, max_participants 
-          FROM events WHERE id = ?";
+$query = "SELECT title, description, event_date, location, event_type, max_participants FROM events WHERE id = ?";
 $stmt = $db->prepare($query);
 $stmt->execute([$eventId]);
-
-if ($stmt->rowCount() === 0) {
-    die("<p style='color:red;'>Event not found.</p>");
-}
 
 $event = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -65,7 +55,7 @@ $checkStmt = $db->prepare($checkQuery);
 $checkStmt->execute([$eventId, $userId]);
 $isRegistered = $checkStmt->rowCount() > 0;
 
-// Handle the "Register to Event" button click
+// Register to Event button
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
     if ($remainingSlots <= 0) {
         echo "<p style='color:red;'>No more slots available for this event.</p>";
@@ -85,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
     }
 }
 
-// Handle the "Cancel Registration" button click
+// Cancel Registration button
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel'])) {
     $cancelQuery = "DELETE FROM event_registrations WHERE event_id = ? AND member_id = ?";
     $cancelStmt = $db->prepare($cancelQuery);
@@ -101,7 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel'])) {
     }
 }
 
-// Handle feedback submission
+// Feedback submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['feedback_submit'])) {
     $feedback = trim($_POST['feedback']);
     $rating = intval($_POST['rating']);
@@ -140,7 +130,7 @@ $averageRating = $averageRatingStmt->fetch(PDO::FETCH_ASSOC)['average_rating'];
     <h2>Event Details</h2>
     <table class="details-table">
         <tr><th>Title:</th><td><?php echo displayValue($event['title']); ?></td></tr>
-        <tr><th>Description:</th><td><?php echo nl2br(displayValue($event['description'])); ?></td></tr>
+        <tr><th>Description:</th><td><?php echo nl2br(displayValue($event['description'])); ?></td></tr> <!--nl2br=break within php-->
         <tr><th>Event Date:</th><td><?php echo displayValue($event['event_date']); ?></td></tr>
         <tr><th>Location:</th><td><?php echo displayValue($event['location']); ?></td></tr>
         <tr><th>Event Type:</th><td><?php echo displayValue($event['event_type']); ?></td></tr>
@@ -148,6 +138,7 @@ $averageRating = $averageRatingStmt->fetch(PDO::FETCH_ASSOC)['average_rating'];
         <tr><th>Remaining Slots:</th><td><?php echo $remainingSlots > 0 ? $remainingSlots : "No slots available"; ?></td></tr>
     </table>
 
+    <!--Cancel button and back to events button-->
     <div class="d-flex align-items-center">
         <?php if ($isRegistered): ?>
             <form method="POST">
@@ -162,8 +153,9 @@ $averageRating = $averageRatingStmt->fetch(PDO::FETCH_ASSOC)['average_rating'];
         <a href="events.php" class="btn btn-primary">Back to Events List</a>
     </div>
 
+    <br>
 
-    <br><h3>Feedback and Ratings</h3>
+    <h3>Feedback and Ratings</h3>
     <?php if ($isRegistered): ?>
         <form method="POST">
             <textarea class= "custom-textbox feedback-textbox" name="feedback" placeholder="Type your feedback here"></textarea>

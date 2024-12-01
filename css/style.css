@@ -1,15 +1,15 @@
 body {
-    min-height: 100vh;
+    min-height: 100vh; /*ensures the body covers at least the full height of the viewport*/
     display: flex;
     flex-direction: column;
 }
 
-.container {
+.container { /*container for main content*/
     flex: 1;
 }
 
 .footer {
-    margin-top: auto;
+    margin-top: auto; /*pushes footer to the bottom of the page*/
 }
 
 .member-card {
@@ -31,13 +31,14 @@ body {
     padding: 20px;
 }
 
+
 /*style and color changes:*/
 
 .navbar {
-    background-color: #b9a0e3 !important;
+    background-color: #b9a0e3 !important; /*!important -> overrides Bootstrap styling*/
 }
 
-.navbar a.nav-link {
+.navbar a.nav-link { /*links in the navigation bar*/
     color: #000080 !important;
 }
 
@@ -45,20 +46,20 @@ body {
     color: lightblue !important;
 }
 
-.navbar-brand {
+.navbar-brand { /* Styling for the brand name in the navbar */
     color: #000080 !important;
     font-size: 1.5em;
     font-weight: bold;
 }
 
-.navbar-logo {
+.navbar-logo { /*logo image in the navbar*/
     width: 8vh;
     height: auto;
     vertical-align: middle;
     margin-right: 10px;
 }
 
-
+    /*custom buttons*/
 .btn-primary {
     background-color: #b9a0e3 !important;
     color: #000080 !important;
@@ -81,6 +82,7 @@ body {
     background-color: mediumpurple !important;
 }
 
+
 .btnprimary {
     color: mediumpurple;
 }
@@ -101,6 +103,8 @@ body {
     color: #000080 !important;
 }
 
+    /*end of custom buttons*/
+
 .custom-dropdown {
     background-color: #b79fed;
 }
@@ -118,9 +122,9 @@ body {
     color: #000080;
 }
 
-.feedback-textbox {
-    width: 800px !important; /* Set the specific width for this feedback box */
-    max-width: 100%; /* Ensures it doesn’t exceed the parent container’s width */
+.feedback-textbox { /*feedback from the events and mentorship pages*/
+    width: 800px !important;
+    max-width: 100%;
 }
 
 /*end of style and color changes:*/

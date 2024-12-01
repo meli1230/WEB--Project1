@@ -19,7 +19,6 @@ $experienceLevelFilter = isset($_GET['experience_level']) ? $_GET['experience_le
 // Search functionality
 $searchQuery = isset($_GET['query']) ? trim($_GET['query']) : '';
 
-// Base query
 $query = "SELECT * FROM jobs WHERE 1=1";
 
 // Add filters to query
@@ -53,7 +52,7 @@ if ($experienceLevelFilter) {
     $stmt->bindParam(":experience_level", $experienceLevelFilter, PDO::PARAM_STR);
 }
 if ($searchQuery) {
-    $searchTerm = "%$searchQuery%";
+    $searchTerm = "%$searchQuery%"; //% = wildcard symbol for matching the search
     $stmt->bindParam(":search", $searchTerm, PDO::PARAM_STR);
 }
 $stmt->bindValue(":offset", $offset, PDO::PARAM_INT);
@@ -92,7 +91,7 @@ if ($searchQuery) {
 }
 $countStmt->execute();
 $total_jobs = $countStmt->fetch(PDO::FETCH_ASSOC)['total_jobs'];
-$total_pages = ceil($total_jobs / $jobs_per_page);
+$total_pages = ceil($total_jobs / $jobs_per_page); //ceil -> round up to the nearest integer
 
 ?>
 
