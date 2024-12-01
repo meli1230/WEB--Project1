@@ -4,7 +4,7 @@ include_once "includes/header.php";
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){ //check if the form is submitted using POST method
     $email = $_POST['email'];
-    $pswd = $_POST['password'];
+    $pswd = isset($_POST['password']) ? $_POST['password'] : '';
 
     $database = new Database();//create a new instance of the database
     $db = $database->getConnection(); //get the database connection object
