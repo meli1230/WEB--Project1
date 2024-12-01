@@ -3,6 +3,13 @@
 include_once "config/database.php";
 include_once "includes/header.php";
 
+// Check if the user is logged in and has admin privileges
+if (!isset($_SESSION['status']) || $_SESSION['status'] !== 'admin') {
+    // Redirect unauthorized users to the login page or another page
+    header("Location: error.php?message=AccessDenied");
+    exit();
+}
+
 $database = new Database(); //create a new instance of the database
 $db = $database->getConnection(); //get the database connection object
 

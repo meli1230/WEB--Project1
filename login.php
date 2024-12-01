@@ -9,7 +9,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){ //check if the form is submitted using
     $database = new Database();//create a new instance of the database
     $db = $database->getConnection(); //get the database connection object
 
-    $query = "SELECT id, pswd, first_name, last_name FROM members WHERE email = ?";
+    $query = "SELECT id, pswd, first_name, last_name, status FROM members WHERE email = ?";
     $stmt = $db->prepare($query);
     $stmt->execute([$email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -18,6 +18,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){ //check if the form is submitted using
         //start session for the user
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['user_name'] = $user['first_name'] . ' ' . $user['last_name'];
+        $_SESSION['status'] = $user['status'];
 
         header("Location: members.php");
         exit;
