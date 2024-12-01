@@ -2,11 +2,6 @@
 include_once "config/database.php";
 include_once "includes/header.php";
 
-// Ensure the user is logged in and fetch their ID
-if (!isset($_SESSION['user_id'])) {
-    die("Access denied. Please log in.");
-}
-
 $user_id = $_SESSION['user_id']; // Assuming the mentor's ID is stored in the session
 
 $database = new Database();
@@ -18,9 +13,11 @@ $stmt = $db->prepare($query);
 $stmt->execute([$user_id]);
 $mentor = $stmt->fetch(PDO::FETCH_ASSOC);
 
+/*
 if (!$mentor) {
     die("Access denied. You are not authorized to create mentorship slots.");
 }
+*/
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {

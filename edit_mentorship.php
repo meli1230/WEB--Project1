@@ -5,11 +5,6 @@ include_once "includes/header.php";
 $database = new Database();
 $db = $database->getConnection();
 
-// Ensure the user is logged in
-if (!isset($_SESSION['user_id'])) {
-    die("Access denied. Please log in.");
-}
-
 $user_id = $_SESSION['user_id']; // Assuming the mentor's ID is stored in the session
 
 // Fetch the mentorship details to ensure the logged-in user is the mentor
@@ -18,9 +13,11 @@ $stmt = $db->prepare($query);
 $stmt->execute([$_GET['id'], $user_id]);
 $mentorship = $stmt->fetch(PDO::FETCH_ASSOC);
 
+/*
 if (!$mentorship) {
     die("Access denied. You are not authorized to edit this mentorship.");
 }
+*/
 
 // Handle form submission to update mentorship
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
