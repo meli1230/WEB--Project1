@@ -3,8 +3,8 @@ include_once "config/database.php";
 
 session_start();
 
-// Check if the user is logged in and has admin privileges
-if (!isset($_SESSION['status']) || $_SESSION['status'] !== 'admin') {
+// Check if the user is logged in and has admin or mentor privileges
+if (!isset($_SESSION['status']) || ($_SESSION['status'] !== 'admin' && $_SESSION['status'] !== 'mentor')) {
     // Redirect unauthorized users to an error page
     header("Location: error.php?message=AccessDenied");
     exit();
