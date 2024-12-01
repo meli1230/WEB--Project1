@@ -32,7 +32,7 @@ $professionFilter = isset($_GET['profession']) ? $_GET['profession'] : '';
 $searchQuery = isset($_GET['query']) ? trim($_GET['query']) : '';
 
 // Base query
-$query = "SELECT * FROM members WHERE status = :status";
+$query = "SELECT * FROM members WHERE status = :status AND status != 'admin'";
 
 // Add profession filter to query
 if ($professionFilter) {
@@ -63,7 +63,7 @@ $stmt->bindValue(":members_per_page", $members_per_page, PDO::PARAM_INT);
 $stmt->execute();
 
 // Get total members count for pagination
-$countQuery = "SELECT COUNT(*) as total_members FROM members WHERE status = :status";
+$countQuery = "SELECT COUNT(*) as total_members FROM members WHERE status = :status AND status != 'admin'";
 
 if ($professionFilter) {
     $countQuery .= " AND profession = :profession";
@@ -145,13 +145,17 @@ $professionStmt->execute();
                         <strong>Company:</strong> <?php echo htmlspecialchars($row['company']); ?>
                     </p>
                     <a href="details_member.php?id=<?php echo $row['id']; ?>" class="btn btnprimary">Details</a>
-                    <a href="edit_member.php?id=<?php echo $row['id']; ?>" class="btn btnprimary">Edit</a>
-                    <a href="delete_member.php?id=<?php echo $row['id']; ?>" class="btn btndanger" onclick="return confirm('Are you sure?')">Delete</a>
+                    <?php if ($pageStatus === 'admin'): ?>
+                        <a href="edit_member.php?id=<?php echo $row['id']; ?>" class="btn btnprimary">Edit</a>
+                        <a href="delete_member.php?id=<?php echo $row['id']; ?>" class="btn btndanger" onclick="return confirm('Are you sure?')">Delete</a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
     <?php endwhile; ?>
 </div>
+
+
 <br/>
 
 <!-- Pagination -->
