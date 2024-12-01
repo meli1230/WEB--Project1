@@ -37,12 +37,18 @@ session_start();
                 <li class="nav-item"><a class="nav-link" href="members.php">Members</a></li>
                 <li class="nav-item"><a class="nav-link" href="mentors.php">Mentors</a></li>
                 <li class="nav-item"><a class="nav-link" href="jobs.php">Jobs</a></li>
-                <li class="nav-item"><a class="nav-link" href="add_job.php">Add Job</a></li>
+                <?php if (isset($_SESSION['status']) && ($_SESSION['status'] === 'admin' || $_SESSION['status'] === 'mentor')): ?>
+                    <li class="nav-item"><a class="nav-link" href="add_job.php">Add Job</a></li>
+                <?php endif; ?>
                 <li class="nav-item"><a class="nav-link" href="resource_hub.php">Resource Hub</a></li>
                 <li class="nav-item"><a class="nav-link" href="events.php">Events</a></li>
-                <li class="nav-item"><a class="nav-link" href="add_event.php">Add Event</a></li>
+                <?php if (isset($_SESSION['status']) && ($_SESSION['status'] === 'admin' || $_SESSION['status'] === 'mentor')): ?>
+                    <li class="nav-item"><a class="nav-link" href="add_event.php">Add Event</a></li>
+                <?php endif; ?>
                 <li class="nav-item"><a class="nav-link" href="mentorships.php">Mentorship</a></li>
-                <li class="nav-item"><a class="nav-link" href="add_mentorship.php">Add Mentorship Slot</a></li>
+                <?php if (isset($_SESSION['status']) && ($_SESSION['status'] === 'admin' || $_SESSION['status'] === 'mentor')): ?>
+                    <li class="nav-item"><a class="nav-link" href="add_mentorship.php">Add Mentorship Slot</a></li>
+                <?php endif; ?>
             </ul>
 
             <!-- Right Section -->
@@ -64,6 +70,7 @@ session_start();
         </div>
     </div>
 </nav>
+
 
 
 <div class="container mt-4"> <!--mt4 = margin-top of 4 units-->

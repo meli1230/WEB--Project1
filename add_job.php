@@ -3,13 +3,6 @@
 include_once "config/database.php";
 include_once "includes/header.php";
 
-// Check if the user is logged in and has admin privileges
-if (!isset($_SESSION['status']) || $_SESSION['status'] == 'member') {
-    // Redirect unauthorized users to an error page
-    header("Location: error.php?message=AccessDenied");
-    exit();
-}
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') { // Check if the form is submitted using POST method
     $database = new Database(); // Create a new instance of the database
     $db = $database->getConnection(); // Get the database connection object

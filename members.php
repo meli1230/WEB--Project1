@@ -145,8 +145,10 @@ $professionStmt->execute();
                         <strong>Company:</strong> <?php echo htmlspecialchars($row['company']); ?>
                     </p>
                     <a href="details_member.php?id=<?php echo $row['id']; ?>" class="btn btnprimary">Details</a>
-                    <a href="edit_member.php?id=<?php echo $row['id']; ?>" class="btn btnprimary">Edit</a>
-                    <a href="delete_member.php?id=<?php echo $row['id']; ?>" class="btn btndanger" onclick="return confirm('Are you sure?')">Delete</a>
+                    <?php if (isset($_SESSION['status']) && ($_SESSION['status'] === 'admin')): ?>
+                        <a href="edit_member.php?id=<?php echo $row['id']; ?>" class="btn btnprimary">Edit</a>
+                        <a href="delete_member.php?id=<?php echo $row['id']; ?>" class="btn btndanger" onclick="return confirm('Are you sure?')">Delete</a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
