@@ -69,7 +69,7 @@ if ($resourceType === 'all') {
         }
         $countQueries[] = $countSubQuery;
     }
-    $countQuery = implode(" UNION ALL ", $countQueries);
+    $countQuery = implode(" UNION ALL ", $countQueries); //concat arrays
     $countStmt = $db->prepare("SELECT SUM(total_resources) AS total_resources FROM ($countQuery) AS total_counts");
 } else {
     $countQuery = "SELECT COUNT(*) as total_resources FROM $table WHERE 1=1";
