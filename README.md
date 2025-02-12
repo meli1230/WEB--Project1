@@ -1,4 +1,4 @@
-# Women TechPower - Web Management System  
+# PHP Web App - Women Techpower
 
 ## Overview  
 This project is a **PHP-based web application** for managing **events, job postings, mentorship programs, and user accounts**. It includes **CRUD operations, authentication, and structured data handling** for an interactive and secure experience.  
