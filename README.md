@@ -37,7 +37,7 @@ This project is a **PHP-based web application** for managing **events, job posti
 - download.php → Handles file downloads
 
 
-###Technologies Used
+## **Technologies Used**
 - PHP (Backend)
 - MySQL (Database)
 - HTML, CSS, JavaScript (Frontend)
